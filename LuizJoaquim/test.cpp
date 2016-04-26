@@ -4,14 +4,14 @@
 
 auto main()->int
 {
-    auto a = Automata<bool>();
+    auto a = Automata<bool>("s0");
 
     //TEST LANGUAGE: (number of zeros)%2 = 0
 
-    a.addState("s0");
+    a.addState("s1");
     // a.addState("s1");
 
-    // a.addTransition(0, "s0", "s1");
+     a.addTransition(0, "s0", "s1");
     // a.addTransition(0, "s1", "s0");
     // a.addTransition(1, "s0", "s0");
     // a.addTransition(1, "s1", "s1");

@@ -1,36 +1,39 @@
 #ifndef TRANS_H
 #define TRANS_H
 
-//--------------------//-----------------------------//
-#include <utility>   // std::make_pair and std::pair//
-#include "state.hpp"// Machine::State              //
-//_________________//_____________________________//
+    /**///*****************************************************///
+   /**///-----------------------//----------------------------///
+  /**/#include <map>           // std::map                    //
+ /**/#include "state.hpp"     // Machine::State              //
+/**///_______________________//____________________________///
 
 namespace Machine{
+
+    typedef enum{
+        FROM, TO
+    } Edge;
 
     //EDGE
     template <typename Symbol_type>
     class Transition{
     private:
-        Symbol_type condition;
-        std::pair< State<Symbol_type>, State<Symbol_type> > states;
+        std::map< Edge,State<Symbol_type> > states;
 
     public:
-        Transition(Symbol_type symbol, State<Symbol_type> from, State<Symbol_type> to) : condition(symbol){
-            states = std::make_pair(from, to);
-        }
-
-        bool matchCondition(Symbol_type symbol){
-            return symbol == condition;
+        Transition(State<Symbol_type> from, State<Symbol_type> to){
+            states[FROM] = from;
+            states[TO] = to;
         }
 
         State<Symbol_type> get_next(){
-            return states.second;
+            return states[TO];
         }
 
         State<Symbol_type> get_actual(){
-            return states.first;
+            return states[FROM];
         }
+
+
     };
 };
 

@@ -2,9 +2,10 @@
 #define AUTOMA_H
 
 //------------------------//---------------------------------------------------------------//
-#include "transition.hpp"// std::make_pair and std::pair and Machine::Transition          //
-#include "state.hpp"    // std::string and std::vector and std::queue and Machine::State //
-//_____________________//_______________________________________________________________//
+#include "transition.hpp"//  Machine::Transition
+#include "exception.hpp"// Exceptions                                                    //
+#include "state.hpp"   // std::string and std::vector and std::queue and Machine::State
+//____________________//_______________________________________________________________//
 
 
 typedef std::string state_name;
@@ -14,52 +15,49 @@ template <typename Symbol_type>
 class Automata{
 private:
 
-    //TODO trocar VECTOR por UNORDERED_SET
-    std::vector < Machine::State<Symbol_type> > states;
-    std::vector < Machine::State<Symbol_type> > final_states;
-    Machine::State<Symbol_type> initial_state;
+    //std::string => stateName, Machine::State<Symbol_type> => state
+    std::unordered_map < std::string, Machine::State<Symbol_type> > states;
+    std::unordered_map < std::string, Machine::State<Symbol_type> > final_states;
+    Machine::State<Symbol_type> *initial_stt_prt;
 
 public:
-    Automata(){}
+    Automata(std::string s0){ addState(s0); }
 
-    void addState(state_name name){
-        addState(name, "");
-    }
-
-    void addState(state_name name, std::string obs){
+    void addState(std::string name, std::string obs){
         if(existState(name))
-            throw /*some exception*/0;
+            throw ExistStateException();
 
         auto state = Machine::State<Symbol_type>(name, obs);
 
         if(states.empty()){
-            initial_state = state;
-            initial_state.set_unset_intial();
+            initial_stt_prt = &state;
+            initial_stt_prt->set_unset_intial();
         }
 
-        states.push_back(state);
+        states.insert({name,state});
     }
 
-    void addTransition(Symbol_type condition, state_name from, state_name to){
+    void addState(std::string name){
+        addState(name, "");
+    }
 
-        auto s1 = find_state_by_name(from);
-        if(s1 == states.end()) throw /*some exception*/0;
+    Machine::State<Symbol_type> get_state_by_name(std::string state_name){
+            return states[state_name];
+    }
 
-        auto s2 = find_state_by_name(to);
-        if(s2 == states.end()) throw /*some exception*/0;
+    void addTransition(Symbol_type condition, std::string from, std::string to){
 
-        s1.connect(s2, condition);
+        if(!existState(from)) throw /*some exception*/0;
+
+        if(!existState(to)) throw /*some exception*/0;
+
+        states[from].connect(states[to], condition);
 
     }
 
-    Machine::State<Symbol_type> find_state_by_name(std::string state_name){
-        return std::find(states.begin(), states.end(), state_name);
-    }
 
     bool existState(std::string state_name){
-        if( std::find(states.begin(), states.end(), state_name) != states.end() ) //FIXIT
-            return true;
-        return false;
+        return states.count(state_name);
     }
 
     bool existFinal(std::string state_name){
@@ -71,7 +69,7 @@ public:
     void set_unset_final(state_name s){
         if(!existState(s)) throw /*some exception*/0;
 
-        auto state = find_state_by_name(s);
+        auto state = get_state_by_name(s);
 
         state.set_unset_final();
 
@@ -85,26 +83,26 @@ public:
     void set_unset_intial(state_name s){
         if(!existState(s)) throw /*some exception*/0;
 
-        auto state = find_state_by_name(s);
+        auto state = get_state_by_name(s);
 
         state.set_unset_intial();
 
-        if(state == initial_state){
-            initial_state = states[0]; // pq precisa de um inicial =/
+        if(state == *initial_stt_prt){
+            //initial_stt_prt = states[0]; // pq precisa de um inicial =/
         } else{
-            initial_state.set_unset_intial();
-            initial_state = state;
+            initial_stt_prt->set_unset_intial();
+            initial_stt_prt = &state;
         }
+    }
+
+    bool allReject(){
+
     }
 
     bool validateWord(std::queue<Symbol_type> word){
 
-        try{
-            auto stop_state = initial_state.make_transitions(word);
-            return existFinal(stop_state);
-        }catch(...){//catch limbo, TODO: improve to AFND
-            return false;
-        }
+        auto stop_state = initial_stt_prt.make_transitions(word);
+
     }
 
 };
