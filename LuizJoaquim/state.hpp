@@ -62,25 +62,17 @@ namespace Machine{
             return obs;
         }
 
-        //TODO works only in AFD, improve to AFND
+
         std::vector< State<Symbol_type> > make_transitions(std::queue<Symbol_type> word){
             std::vector< State<Symbol_type> > reached_states;
 
             if(word.empty()){
                 return reached_states.push_back(*this);
-            }else{
-                Symbol_type actual_token = word.pop();
-                for(Transition<Symbol_type> t : transitions){
-                    if(t.matchCondition(actual_token)){
-                        reached_states.push_back(t.get_next().make_transitions(word));
-                    }
-                }
+            }
 
-                if(reached_states.empty())
-                    reached_states.push_back(getLimboState());
+
 
                 return reached_states;
-            }
         }
 
         void connect(State<Symbol_type> s, Symbol_type condition){

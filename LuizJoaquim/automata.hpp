@@ -1,11 +1,12 @@
 #ifndef AUTOMA_H
 #define AUTOMA_H
 
-//------------------------//---------------------------------------------------------------//
-#include "transition.hpp"//  Machine::Transition
-#include "exception.hpp"// Exceptions                                                    //
-#include "state.hpp"   // std::string and std::vector and std::queue and Machine::State
-//____________________//_______________________________________________________________//
+//--------------------------//---------------------------------------------------------------//
+#include <unordered_map>   // std::unordered_map
+#include "exception.hpp"  // Exceptions                                                    //
+#include "transition.hpp"// Machine::Transition
+#include "state.hpp"    // std::string and std::vector and std::queue and Machine::State
+//_____________________//_______________________________________________________________//
 
 
 typedef std::string state_name;
@@ -18,7 +19,7 @@ private:
     //std::string => stateName, Machine::State<Symbol_type> => state
     std::unordered_map < std::string, Machine::State<Symbol_type> > states;
     std::unordered_map < std::string, Machine::State<Symbol_type> > final_states;
-    Machine::State<Symbol_type> *initial_stt_prt;
+    Machine::State<Symbol_type> *initial_stt_prt = NULL;
 
 public:
     Automata(std::string s0){ addState(s0); }
@@ -30,11 +31,11 @@ public:
         auto state = Machine::State<Symbol_type>(name, obs);
 
         if(states.empty()){
-            initial_stt_prt = &state;
-            initial_stt_prt->set_unset_intial();
+           initial_stt_prt = &state;
+           initial_stt_prt->set_unset_intial();
         }
 
-        states.insert({name,state});
+        states.emplace(name,state);
     }
 
     void addState(std::string name){
@@ -47,11 +48,9 @@ public:
 
     void addTransition(Symbol_type condition, std::string from, std::string to){
 
-        if(!existState(from)) throw /*some exception*/0;
+        if( !(existState(from) and existState(to)) ) throw MissingStateException();
 
-        if(!existState(to)) throw /*some exception*/0;
-
-        states[from].connect(states[to], condition);
+        states.at(from).connect(states.at(to), condition);
 
     }
 
@@ -67,7 +66,7 @@ public:
     }
 
     void set_unset_final(state_name s){
-        if(!existState(s)) throw /*some exception*/0;
+        if(!existState(s)) throw MissingStateException();
 
         auto state = get_state_by_name(s);
 
@@ -81,18 +80,18 @@ public:
     }
 
     void set_unset_intial(state_name s){
-        if(!existState(s)) throw /*some exception*/0;
+        if(!existState(s)) throw MissingStateException();
 
-        auto state = get_state_by_name(s);
+        // auto state = get_state_by_name(s);
 
-        state.set_unset_intial();
+        // state.set_unset_intial();
 
-        if(state == *initial_stt_prt){
-            //initial_stt_prt = states[0]; // pq precisa de um inicial =/
-        } else{
-            initial_stt_prt->set_unset_intial();
-            initial_stt_prt = &state;
-        }
+        // if(state == *initial_stt_prt){
+        //     //initial_stt_prt = states[0]; // pq precisa de um inicial =/
+        // } else{
+        //     initial_stt_prt->set_unset_intial();
+        //     initial_stt_prt = &state;
+        // }
     }
 
     bool allReject(){
