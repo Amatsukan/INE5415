@@ -1,7 +1,7 @@
 # Declaration of variables
-CC = ccache g++
+CC = g++-5
 CC_FLAGS = -std=c++14
-CC_DEBUG = -g3 -O0
+CC_DEBUG = -g -O0 -ggdb
 
 # File names
 EXEC = Automata

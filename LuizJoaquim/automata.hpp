@@ -32,7 +32,6 @@ public:
 
         if(states.empty()){
            initial_stt_prt = &state;
-           initial_stt_prt->set_unset_intial();
         }
 
         states.emplace(name,state);
@@ -43,7 +42,7 @@ public:
     }
 
     Machine::State<Symbol_type> get_state_by_name(std::string state_name){
-            return states[state_name];
+            return states.at(state_name);
     }
 
     void addTransition(Symbol_type condition, std::string from, std::string to){
@@ -55,52 +54,41 @@ public:
     }
 
 
-    bool existState(std::string state_name){
-        return states.count(state_name);
+    bool existState(state_name key){
+        return states.count(key);
     }
 
-    bool existFinal(std::string state_name){
-        if( std::find(final_states.begin(), final_states.end(), state_name) != final_states.end() )//FIXIT
-            return true;
-        return false;
+    bool existFinal(state_name key){
+        return final_states.count(key);
+    }
+
+    bool existFinal(){
+        return final_states.size();
     }
 
     void set_unset_final(state_name s){
         if(!existState(s)) throw MissingStateException();
 
-        auto state = get_state_by_name(s);
-
-        state.set_unset_final();
-
         if(existFinal(s)){
-            final_states.erase(std::remove(final_states.begin(), final_states.end(), s), final_states.end());
+            final_states.erase(s);
         }else{
-            final_states.push_back(state);
+            final_states.emplace(s,Machine::State<Symbol_type>(s));
+            final_states.at(s).set_unset_final();
         }
+
     }
 
-    void set_unset_intial(state_name s){
+    void set_unset_initial(state_name s){
         if(!existState(s)) throw MissingStateException();
 
-        // auto state = get_state_by_name(s);
-
-        // state.set_unset_intial();
-
-        // if(state == *initial_stt_prt){
-        //     //initial_stt_prt = states[0]; // pq precisa de um inicial =/
-        // } else{
-        //     initial_stt_prt->set_unset_intial();
-        //     initial_stt_prt = &state;
-        // }
-    }
-
-    bool allReject(){
-
+        *initial_stt_prt = get_state_by_name(s);
     }
 
     bool validateWord(std::queue<Symbol_type> word){
 
-        auto stop_state = initial_stt_prt.make_transitions(word);
+        auto stop_states = initial_stt_prt->make_transitions(word);
+
+        std::cout<<stop_states.size()<<std::endl;
 
     }
 

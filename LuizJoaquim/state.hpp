@@ -24,26 +24,25 @@ namespace Machine{
         std::string state_name;
         std::string obs = " ";
         bool final_st = false;
-        bool initial_st = false;
 
                             //Condition, State relationship
         std::multimap< Symbol_type, State<Symbol_type> > transitions;
 
-        State<Symbol_type> getLimboState(bool acept = false){
-            State<Symbol_type> s("LIMBO","Limbo state: created automatically when consuming an unknown entry");
+        State<Symbol_type>* getLimboState(bool acept = false){
+            State<Symbol_type>* s = new State<Symbol_type>("LIMBO","Limbo state: created automatically when consuming an unknown entry");
             if(acept){
-                s.set_unset_final();
+                s->set_unset_final();
             }
 
             return s;
         }
 
     public:
-        State(std::string name) : state_name(name){}
-        State(std::string name, std::string obs) : state_name(name), obs(obs){}
-
-        void set_unset_intial(){
-            initial_st = !initial_st;
+        State(std::string name) : state_name(name){
+            std::aligned_storage< sizeof(transitions), std::alignment_of<transitions>::value>::type storage;
+        }
+        State(std::string name, std::string obs) : state_name(name), obs(obs){
+            std::aligned_storage< sizeof(transitions), std::alignment_of<transitions>::value>::type storage;
         }
 
         void set_unset_final(){
@@ -54,40 +53,45 @@ namespace Machine{
             return final_st;
         }
 
-        bool isInitial(){
-            return initial_st;
-        }
-
         std::string getObs(){
             return obs;
         }
 
+        bool operator=(Machine::State<Symbol_type> s){
+            return state_name == s.state_name;
+        }
 
-        std::vector< State<Symbol_type> > make_transitions(std::queue<Symbol_type> word){
-            std::vector< State<Symbol_type> > reached_states;
+
+        std::vector< State<Symbol_type>* > make_transitions(std::queue<Symbol_type> word){
+            std::vector< State<Symbol_type>* > reached_states;
 
             if(word.empty()){
-                return reached_states.push_back(*this);
-            }
 
+                reached_states.push_back(this);
 
+            }else{
 
-                return reached_states;
+                Symbol_type token =  word.front();
+                // word.pop();
+
+                std::cout<< transitions.size() <<std::endl;
+                // if(transitions.count(token) > 0){
+
+                    // for (auto it=its->first; it!=its->second; ++it){
+                    //     std::vector< State<Symbol_type>* > results = (*it).second.make_transitions(word);
+                    //     reached_states.assign(results.begin(), results.end());
+                    // }
+
+                // }else{
+                // //     reached_states.push_back(getLimboState());
+                // }
+             }
+
+            return reached_states;
         }
 
         void connect(State<Symbol_type> s, Symbol_type condition){
-            transitions.insert({condition,s});
-        }
-
-    };
-
-    template <typename Symbol_type>
-    class LimboState : public State<Symbol_type>{
-    public:
-        LimboState(bool acept = false) : State<Symbol_type>("LIMBO","Limbo state: created automatically when consuming an unknown entry"){
-            if(acept){
-                this->set_unset_final();
-            }
+            transitions.insert(std::pair<Symbol_type,State<Symbol_type>>(condition,s));
         }
 
     };
