@@ -39,10 +39,10 @@ namespace Machine{
 
     public:
         State(std::string name) : state_name(name){
-            std::aligned_storage< sizeof(transitions), std::alignment_of<transitions>::value>::type storage;
+            transitions = std::multimap< Symbol_type, State<Symbol_type> >();
         }
         State(std::string name, std::string obs) : state_name(name), obs(obs){
-            std::aligned_storage< sizeof(transitions), std::alignment_of<transitions>::value>::type storage;
+            transitions = std::multimap< Symbol_type, State<Symbol_type> >();
         }
 
         void set_unset_final(){
@@ -65,26 +65,32 @@ namespace Machine{
         std::vector< State<Symbol_type>* > make_transitions(std::queue<Symbol_type> word){
             std::vector< State<Symbol_type>* > reached_states;
 
+            std::cout<<"State:"<< state_name <<" symbol:" << word.front() <<" word size:"<<word.size()<<std::endl;
+
             if(word.empty()){
+
+                std::cout<<"Reached: "<<state_name<<std::endl;
 
                 reached_states.push_back(this);
 
             }else{
 
                 Symbol_type token =  word.front();
-                // word.pop();
+                word.pop();
 
-                std::cout<< transitions.size() <<std::endl;
-                // if(transitions.count(token) > 0){
+                if(transitions.count(token) > 0){
 
-                    // for (auto it=its->first; it!=its->second; ++it){
-                    //     std::vector< State<Symbol_type>* > results = (*it).second.make_transitions(word);
-                    //     reached_states.assign(results.begin(), results.end());
-                    // }
+                    auto its = transitions.equal_range(token);
+                    for (auto it=its.first; it!=its.second; ++it){
+                        std::cout<<"["<< state_name <<", s= " << word.front()<<" goto-> "<<(*it).second.state_name<<"]"<<std::endl;
+                        std::vector< State<Symbol_type>* > results = (*it).second.make_transitions(word);
+                        reached_states.assign(results.begin(), results.end());
+                    }
 
-                // }else{
-                // //     reached_states.push_back(getLimboState());
-                // }
+                }else{
+                    std::cout<<"LIMBO"<<std::endl;
+                    reached_states.push_back(getLimboState());
+                 }
              }
 
             return reached_states;

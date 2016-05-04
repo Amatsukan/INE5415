@@ -2,11 +2,11 @@
 #define AUTOMA_H
 
 //--------------------------//---------------------------------------------------------------//
-#include <unordered_map>   // std::unordered_map
+#include <unordered_map>   // std::unordered_map                                            //
 #include "exception.hpp"  // Exceptions                                                    //
-#include "transition.hpp"// Machine::Transition
-#include "state.hpp"    // std::string and std::vector and std::queue and Machine::State
-//_____________________//_______________________________________________________________//
+#include "transition.hpp"// Machine::Transition                                           //
+#include "state.hpp"    // std::string and std::vector and std::queue and Machine::State //
+//____________________//_______________________________________________________________//
 
 
 typedef std::string state_name;
@@ -19,7 +19,7 @@ private:
     //std::string => stateName, Machine::State<Symbol_type> => state
     std::unordered_map < std::string, Machine::State<Symbol_type> > states;
     std::unordered_map < std::string, Machine::State<Symbol_type> > final_states;
-    Machine::State<Symbol_type> *initial_stt_prt = NULL;
+    std::string InitialStateName;
 
 public:
     Automata(std::string s0){ addState(s0); }
@@ -30,11 +30,12 @@ public:
 
         auto state = Machine::State<Symbol_type>(name, obs);
 
-        if(states.empty()){
-           initial_stt_prt = &state;
+        states.emplace(name,state);
+
+        if(states.size() == 1){
+           set_unset_initial(name);
         }
 
-        states.emplace(name,state);
     }
 
     void addState(std::string name){
@@ -42,7 +43,7 @@ public:
     }
 
     Machine::State<Symbol_type> get_state_by_name(std::string state_name){
-            return states.at(state_name);
+        return states.at(state_name);
     }
 
     void addTransition(Symbol_type condition, std::string from, std::string to){
@@ -81,15 +82,24 @@ public:
     void set_unset_initial(state_name s){
         if(!existState(s)) throw MissingStateException();
 
-        *initial_stt_prt = get_state_by_name(s);
+        InitialStateName = s;
     }
 
     bool validateWord(std::queue<Symbol_type> word){
 
-        auto stop_states = initial_stt_prt->make_transitions(word);
+        auto initialState =  get_state_by_name(InitialStateName);
 
-        std::cout<<stop_states.size()<<std::endl;
+        auto stop_states = initialState.make_transitions(word);
 
+        std::cout<<"Number of States in vector: "<< stop_states.size() <<std::endl;
+
+        for(auto state : stop_states){
+            if(state->isFinal()){
+                return true;
+            }
+        }
+
+        return false;
     }
 
 };
