@@ -4,9 +4,8 @@
 //--------------------------//---------------------------------------------------------------//
 #include <unordered_map>   // std::unordered_map                                            //
 #include "exception.hpp"  // Exceptions                                                    //
-#include "transition.hpp"// Machine::Transition                                           //
-#include "state.hpp"    // std::string and std::vector and std::queue and Machine::State //
-//____________________//_______________________________________________________________//
+#include "state.hpp"     // std::string and std::vector and std::queue and Machine::State //
+//______________________//_______________________________________________________________//
 
 
 typedef std::string state_name;
@@ -33,7 +32,7 @@ public:
         states.emplace(name,state);
 
         if(states.size() == 1){
-           set_unset_initial(name);
+           toggle_initial(name);
         }
 
     }
@@ -50,10 +49,15 @@ public:
 
         if( !(existState(from) and existState(to)) ) throw MissingStateException();
 
-        states.at(from).connect(states.at(to), condition);
-
+        states.at(from).connect(&(states.at(to)), condition);
     }
 
+    void addEpsilonTransition(std::string from, std::string to){
+
+        if( !(existState(from) and existState(to)) ) throw MissingStateException();
+
+        states.at(from).epsilonConnect(&(states.at(to)));
+    }
 
     bool existState(state_name key){
         return states.count(key);
@@ -67,19 +71,18 @@ public:
         return final_states.size();
     }
 
-    void set_unset_final(state_name s){
+    void toggle_final(state_name s){
         if(!existState(s)) throw MissingStateException();
 
         if(existFinal(s)){
             final_states.erase(s);
         }else{
             final_states.emplace(s,Machine::State<Symbol_type>(s));
-            final_states.at(s).set_unset_final();
         }
 
     }
 
-    void set_unset_initial(state_name s){
+    void toggle_initial(state_name s){
         if(!existState(s)) throw MissingStateException();
 
         InitialStateName = s;
@@ -91,10 +94,8 @@ public:
 
         auto stop_states = initialState.make_transitions(word);
 
-        std::cout<<"Number of States in vector: "<< stop_states.size() <<std::endl;
-
         for(auto state : stop_states){
-            if(state->isFinal()){
+            if(existFinal(state->getName())){
                 return true;
             }
         }

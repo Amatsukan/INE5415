@@ -1,6 +1,9 @@
-// using standard exceptions
-#include <exception>
-
+      // using standard exceptions
+   /**///*****************************************************///
+  /**///-----------------------//----------------------------///
+        #include <exception>  // std::exception              //
+ /**///----------------------//----------------------------///
+/**///****************************************************///
 class ExistStateException : public std::exception{
   virtual const char* what() const throw()
   {
