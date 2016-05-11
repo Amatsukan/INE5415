@@ -22,6 +22,7 @@ private:
 
 public:
     Automata(std::string s0){ addState(s0); }
+    Automata(){}
 
     void addState(std::string name, std::string obs){
         if(existState(name))
