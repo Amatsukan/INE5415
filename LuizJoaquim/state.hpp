@@ -53,10 +53,28 @@ namespace Machine{
             return state_name == s.state_name;
         }
 
-
+        std::set<State<Symbol_type>*> get_epsilon_reach(){
+            return epsilonTransitions;
+        }
+        
+        std::set<State<Symbol_type>*> get_hit_by(Symbol_type symbol){
+            std::vector< State<Symbol_type>* > reached_states;
+            
+            if(transitions.count(symbol) > 0){
+                auto its = transitions.equal_range(symbol);
+                for (auto it=its.first; it!=its.second; ++it){
+                    reached_states.push_back((*it).second);;
+                }
+            }else{
+                reached_states.push_back(getLimboState());
+            }
+            
+            return reached_states;
+        }
+       
         std::vector< State<Symbol_type>* > make_transitions(std::queue<Symbol_type> word){
             std::vector< State<Symbol_type>* > reached_states;
-
+              
             if(epsilonTransitions.size() > 0){
                 for (auto it=epsilonTransitions.begin(); it!=epsilonTransitions.end(); ++it){
                         std::vector< State<Symbol_type>* > results = (*it)->make_transitions(word);
@@ -74,7 +92,6 @@ namespace Machine{
                 word.pop();
 
                 if(transitions.count(token) > 0){
-
                     auto its = transitions.equal_range(token);
                     for (auto it=its.first; it!=its.second; ++it){
                         std::vector< State<Symbol_type>* > results = (*it).second->make_transitions(word);
