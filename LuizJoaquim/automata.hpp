@@ -18,11 +18,12 @@ private:
     //std::string => stateName, Machine::State<Symbol_type> => state
     std::unordered_map < std::string, Machine::State<Symbol_type> > states;
     std::unordered_map < std::string, Machine::State<Symbol_type> > final_states;
+    std::vector< char > Alphabet;
     std::string InitialStateName;
 
 public:
     Automata(std::string s0){ addState(s0); }
-    Automata(){}
+    Automata(std::vector< char > Alp) : Alphabet(Alp){}
 
     void addState(std::string name, std::string obs){
         if(existState(name))
@@ -81,6 +82,41 @@ public:
             final_states.emplace(s,Machine::State<Symbol_type>(s));
         }
 
+    }
+
+    std::string getInitial(){
+        return InitialStateName;
+    }
+
+    std::string getFinals(){
+        std::string ret;
+        for(auto state : final_states){
+            ret+=state.second.getName();
+            ret+=" ";
+        }
+
+        return ret;
+    }
+
+    std::string getStates(){
+        std::string ret;
+        for(auto state : states){
+            ret+=state.second.getName();
+            ret+=" ";
+        }
+
+        return ret;
+    }
+
+    std::string getAlphabet(){
+        std::string ret;
+        for(auto c : Alphabet){
+            if(c == '#' or c == '&') continue;
+            ret+=c;
+            ret+=" ";
+        }
+
+        return ret;
     }
 
     void toggle_initial(state_name s){

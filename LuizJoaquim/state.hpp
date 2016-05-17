@@ -1,6 +1,7 @@
 #ifndef STAT_H
 #define STAT_H
 
+#include <iostream>
 
        /**///*****************************************************///
       /**///-----------------------//----------------------------///
@@ -11,11 +12,6 @@
   /**///______________________//____________________________///
 
 namespace Machine{
-
-    //foward declaration//
-    template <typename Symbol_type>
-    class Transition;
-
 
     //NODE
     template <typename Symbol_type>
@@ -36,10 +32,9 @@ namespace Machine{
         }
 
     public:
-        State(std::string name) : state_name(name){
-        }
-        State(std::string name, std::string obs) : state_name(name), obs(obs){
-        }
+        State(std::string name) : state_name(name){}
+
+        State(std::string name, std::string obs) : state_name(name), obs(obs){}
 
         std::string getObs(){
             return obs;
@@ -56,10 +51,10 @@ namespace Machine{
         std::set<State<Symbol_type>*> get_epsilon_reach(){
             return epsilonTransitions;
         }
-        
+
         std::set<State<Symbol_type>*> get_hit_by(Symbol_type symbol){
             std::vector< State<Symbol_type>* > reached_states;
-            
+
             if(transitions.count(symbol) > 0){
                 auto its = transitions.equal_range(symbol);
                 for (auto it=its.first; it!=its.second; ++it){
@@ -68,23 +63,54 @@ namespace Machine{
             }else{
                 reached_states.push_back(getLimboState());
             }
-            
+
             return reached_states;
         }
-       
+
+        std::string get_hit_by_str(Symbol_type symbol){
+            std::string reached_states = "";
+
+            if(transitions.count(symbol) > 0){
+                auto its = transitions.equal_range(symbol);
+                for (auto it=its.first; it!=its.second; ++it){
+                    reached_states+=(*it).second->getName();
+                    reached_states+="\t";
+                }
+            }else{
+                reached_states =  getLimboState()->getName();
+            }
+
+            return reached_states;
+        }
+
+        std::string get_epsilon_reach_str(){
+            std::string reached_states = "";
+
+            for (auto state :  epsilonTransitions)
+            {
+                reached_states+=state->getName();
+                reached_states+="\t";
+            }
+
+            return reached_states;
+        }
+
         std::vector< State<Symbol_type>* > make_transitions(std::queue<Symbol_type> word){
             std::vector< State<Symbol_type>* > reached_states;
-              
+
+
             if(epsilonTransitions.size() > 0){
                 for (auto it=epsilonTransitions.begin(); it!=epsilonTransitions.end(); ++it){
                         std::vector< State<Symbol_type>* > results = (*it)->make_transitions(word);
-                        reached_states.assign(results.begin(), results.end());
+                        reached_states.insert( reached_states.end(), results.begin(), results.end() );
                     }
             }
 
-            if(word.empty()){
 
+
+            if(word.empty()){
                 reached_states.push_back(this);
+                return reached_states;
 
             }else{
 
@@ -95,7 +121,7 @@ namespace Machine{
                     auto its = transitions.equal_range(token);
                     for (auto it=its.first; it!=its.second; ++it){
                         std::vector< State<Symbol_type>* > results = (*it).second->make_transitions(word);
-                        reached_states.assign(results.begin(), results.end());
+                        reached_states.insert( reached_states.end(), results.begin(), results.end() );
                     }
                 }else{
                     reached_states.push_back(getLimboState());
