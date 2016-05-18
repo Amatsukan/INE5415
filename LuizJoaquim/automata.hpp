@@ -5,7 +5,8 @@
 #include <unordered_map>   // std::unordered_map                                            //
 #include "exception.hpp"  // Exceptions                                                    //
 #include "state.hpp"     // std::string and std::vector and std::queue and Machine::State //
-//______________________//_______________________________________________________________//
+#include "config.hpp"   // ConfigReader                                                  //
+//_____________________//_______________________________________________________________//
 
 
 typedef std::string state_name;
@@ -111,7 +112,7 @@ public:
     std::string getAlphabet(){
         std::string ret;
         for(auto c : Alphabet){
-            if(c == '#' or c == '&') continue;
+            if(c == ConfigReader::getNullSlot() or c == ConfigReader::getEpsilon()) continue;
             ret+=c;
             ret+=" ";
         }

@@ -1,0 +1,11 @@
+#Configuração dos identificadores
+#ex: identificador char
+#
+#Obs: InitialStateIdentifier e NotTransitionIdentifier podem ser uma string
+#Obs2: Nenhum valor pode ficar vazio
+
+EpsilonIdentifier:&
+FinalStateIdentifier:*
+InitialStateIdentifier:->
+FirstTableNullSlotId:#
+NotTransitionIdentifier:--

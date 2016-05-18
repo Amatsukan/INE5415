@@ -2,19 +2,19 @@
 #define TW_H
 
 #include <iostream>
-#include <algorithm>
-#include <sstream>
-     /**///*****************************************************///
-    /**///-----------------------//----------------------------///
-         #include <string>      // std::string                 //
-        #include <fstream>     // std::multimap               //
-       #include "automata.hpp"// Automaton                   //
-  /**///_____________________//____________________________///
- /**///***************************************************///
+        /**///*****************************************************///
+       /**///-----------------------//----------------------------///
+            #include <string>      // std::string                 //
+           #include <fstream>     // std::multimap               //
+          #include "automata.hpp"// Automaton                   //
+         #include <algorithm>   // std::getLine                //
+        #include <sstream>     // std::stringstream           //
+  /**///______________________//____________________________///
+ /**///****************************************************///
 
 class TableWorker{
 private:
-    const char epsilon = '&';
+
     std::ifstream inputFile;
     std::ofstream outputFile;
 
@@ -56,6 +56,7 @@ private:
     std::vector<std::string> getNEstates(std::string *field);
 
 public:
+
     Automata<char> getInputMachine();
 };
 

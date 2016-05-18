@@ -1,5 +1,6 @@
 #include "tableworker.hpp"
 #include <sstream>
+#include "config.hpp"
 
 std::vector<std::string> TableWorker::getNEstates(std::string *field){
     std::vector<std::string> ret;
@@ -50,11 +51,11 @@ Automata<char> TableWorker::getInputMachine(){
         }
         for(int i = 1; i< alphabet.size(); i++){
             for(auto s : getNEstates( &(stateAndTransitions[i]) ))
-                if(s!="-"){
+                if( s!= ConfigReader::getNotTransition() ){
                     if(!a.existState(s)){
                         a.addState(s);
                     }
-                    if(alphabet[i] == epsilon)
+                    if(alphabet[i] == ConfigReader::getEpsilon())
                         a.addEpsilonTransition(actualState, s);
                     else
                         a.addTransition(alphabet[i], actualState, s);
@@ -69,8 +70,8 @@ Automata<char> TableWorker::getInputMachine(){
 bool TableWorker::isFinal(std::string *stateName){
 
     for (int i = 0; i < stateName->size(); ++i)
-        if((*stateName)[i] == '*'){
-            (*stateName).erase(std::remove((*stateName).begin(), (*stateName).end(), '*'), (*stateName).end());
+        if((*stateName)[i] == ConfigReader::getFinalStateChar()){
+            (*stateName).erase(std::remove((*stateName).begin(), (*stateName).end(), ConfigReader::getFinalStateChar()), (*stateName).end());
             return true;
         }
 
@@ -79,12 +80,12 @@ bool TableWorker::isFinal(std::string *stateName){
 
 bool TableWorker::isInitial(std::string *stateName){
 
-        for (int i = 0; i < stateName->size()-1; ++i)
-        if((*stateName)[i] == '-' and (*stateName)[i+1] =='>'){
-            (*stateName).erase(std::remove((*stateName).begin(), (*stateName).end(), '-'), (*stateName).end());
-            (*stateName).erase(std::remove((*stateName).begin(), (*stateName).end(), '>'), (*stateName).end());
-            return true;
+    if ((*stateName).find(ConfigReader::getInitialStateString()) != std::string::npos){
+        for(auto c : ConfigReader::getInitialStateString()){
+            (*stateName).erase(std::remove((*stateName).begin(), (*stateName).end(), c), (*stateName).end());
         }
+        return true;
+    }
 
     return false;
 }
