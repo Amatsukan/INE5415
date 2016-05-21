@@ -114,7 +114,7 @@ public:
         for(auto c : Alphabet){
             if(c == ConfigReader::getNullSlot() or c == ConfigReader::getEpsilon()) continue;
             ret+=c;
-            ret+=" ";
+            ret+="    ";
         }
 
         return ret;
