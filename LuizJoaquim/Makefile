@@ -1,5 +1,5 @@
 # Declaration of variables
-CC = g++-5
+CC = g++
 CC_FLAGS = -std=c++14
 CC_DEBUG = -g -O0 -ggdb
 
