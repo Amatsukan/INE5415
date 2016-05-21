@@ -90,11 +90,11 @@ public:
     }
 
 
-    std::string getInitial(){
+    std::string getInitial_str(){
         return InitialStateName;
     }
 
-    std::string getFinals(){
+    std::string getFinals_str(){
         std::string ret;
         for(auto state : final_states){
             ret+=state.second.getName();
@@ -104,7 +104,7 @@ public:
         return ret;
     }
 
-    std::string getStates(){
+    std::string getStates_str(){
         std::string ret;
         for(auto state : states){
             ret+=state.second.getName();
