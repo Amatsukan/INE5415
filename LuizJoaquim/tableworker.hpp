@@ -56,7 +56,8 @@ private:
     std::vector<std::string> getNEstates(std::string *field);
 
 public:
-
+        
+    void setOutputMachine(Automata<char>);
     Automata<char> getInputMachine();
 };
 
