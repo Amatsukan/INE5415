@@ -69,6 +69,10 @@ public:
     bool isFinal(state_name key){
         return final_states.count(key);
     }
+    
+    bool isInitial(state_name key){
+        return (key == InitialStateName);
+    }
 
     bool existFinal(){
         return final_states.size();
