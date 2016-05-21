@@ -15,10 +15,27 @@ std::vector<std::string> TableWorker::getNEstates(std::string *field){
     return ret;
 }
 
+void TableWorker::setOutputMachine(Automata<char> a){
+    OpenOutputFile();
+    
+    std::string alphabetLine = "#     " + a.getAlphabet();
+    outputFile << alphabetLine << "\n";
+    
+    std::unordered_map < std::string, Machine::State<Symbol_type> > states = a.getStates();
+
+    for(auto s:states){
+        if(a.isInicial(s.getName))
+        std::string estado = "";
+        if(s.is)
+        
+    }
+    
+    CloseFiles();
+}
+
 Automata<char> TableWorker::getInputMachine(){
     OpenInputFile();
-
-
+    
     std::string alphabetLine;
     std::getline(inputFile, alphabetLine);
 
