@@ -21,13 +21,20 @@ void TableWorker::setOutputMachine(Automata<char> a){
     std::string alphabetLine = "#     " + a.getAlphabet();
     outputFile << alphabetLine << "\n";
     
-    std::unordered_map < std::string, Machine::State<Symbol_type> > states = a.getStates();
+    auto states = a.getStates();
 
     for(auto s:states){
-        if(a.isInicial(s.getName))
-        std::string estado = "";
-        if(s.is)
-        
+        std::string sName = s.second.getName();
+        std::string estado_str = "";
+        if(a.isInitial(sName)){
+            estado_str += ConfigReader::getInitialStateString();
+        }
+        if(a.isFinal(sName)){
+            estado_str += ConfigReader::getFinalStateChar();
+        }
+        estado_str += sName + "    ";
+        estado_str += a.getStateTransitions_str(sName);
+        outputFile << estado_str << "\n";           
     }
     
     CloseFiles();

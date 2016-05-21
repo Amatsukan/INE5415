@@ -2,6 +2,7 @@
 #define STAT_H
 
 #include <iostream>
+#include "config.hpp"
 
        /**///*****************************************************///
       /**///-----------------------//----------------------------///
@@ -26,8 +27,7 @@ namespace Machine{
         std::set<State<Symbol_type>*> epsilonTransitions;
 
         State<Symbol_type>* getLimboState(){
-            static State<Symbol_type>* s = new State<Symbol_type>("LIMBO","Limbo state: created automatically when consuming an unknown entry");
-
+            static State<Symbol_type>* s = new State<Symbol_type>(ConfigReader::getNotTransition() ,"Limbo state: created automatically when consuming an unknown entry");
             return s;
         }
 
@@ -42,6 +42,10 @@ namespace Machine{
 
         std::string getName(){
             return state_name;
+        }
+      
+        std::string getLimboName(){
+            return getLimboState ->getName();
         }
 
         bool operator=(Machine::State<Symbol_type> s){

@@ -1,6 +1,6 @@
 # Declaration of variables
 CC = g++
-CC_FLAGS = -std=c++14
+CC_FLAGS = -std=c++11
 CC_DEBUG = -g -O0 -ggdb
 
 # File names

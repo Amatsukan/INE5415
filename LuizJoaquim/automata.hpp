@@ -62,7 +62,7 @@ public:
         states.at(from).epsilonConnect(&(states.at(to)));
     }
 
-    bool isState(state_name key){
+    bool existState(state_name key){
         return states.count(key);
     }
 
@@ -81,7 +81,7 @@ public:
     void toggle_final(state_name s){
         if(!existState(s)) throw MissingStateException();
 
-        if(existFinal(s)){
+        if(isFinal(s)){
             final_states.erase(s);
         }else{
             final_states.emplace(s,Machine::State<Symbol_type>(s));
@@ -128,6 +128,24 @@ public:
 
         return ret;
     }
+  
+   std::string getStateTransitions_str(std::string s){
+       std::string stateT = "";
+       
+       auto spaces = [&](std::string name, int limit){
+           std::string ret;
+           for(int i=0;i < limit-name.size(); i++)
+                ret += " "; 
+           return ret;
+       };
+       
+       for(char c:Alphabet){
+           std::string hitByC = get_state_by_name(s).get_hit_by_str(c);
+           stateT += hitByC + spaces(hitByC, 6);
+       }
+       
+       return stateT;
+   }
 
     void toggle_initial(state_name s){
         if(!existState(s)) throw MissingStateException();
@@ -142,7 +160,7 @@ public:
         auto stop_states = initialState.make_transitions(word);
 
         for(auto state : stop_states){
-            if(existFinal(state->getName())){
+            if(isFinal(state->getName())){
                 return true;
             }
         }
