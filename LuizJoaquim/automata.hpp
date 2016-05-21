@@ -84,6 +84,11 @@ public:
         }
 
     }
+    
+    std::unordered_map < std::string, Machine::State<Symbol_type> > getStates(){
+        return states;
+    }
+
 
     std::string getInitial(){
         return InitialStateName;
