@@ -62,11 +62,11 @@ public:
         states.at(from).epsilonConnect(&(states.at(to)));
     }
 
-    bool existState(state_name key){
+    bool isState(state_name key){
         return states.count(key);
     }
 
-    bool existFinal(state_name key){
+    bool isFinal(state_name key){
         return final_states.count(key);
     }
 
