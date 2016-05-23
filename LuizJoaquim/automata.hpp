@@ -128,8 +128,12 @@ public:
 
         return ret;
     }
+
+    std::vector<char> getAlphabet_vector(){
+        return Alphabet;
+    }
   
-   std::string getStateTransitions_str(std::string s){
+    std::string getStateTransitions_str(std::string s){
        std::string stateT = "";
        
        auto spaces = [&](std::string name, int limit){

@@ -93,7 +93,7 @@ namespace Machine{
             for (auto state :  epsilonTransitions)
             {
                 reached_states+=state->getName();
-                reached_states+="\t";
+                reached_states+=" ";
             }
 
             return reached_states;
