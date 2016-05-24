@@ -1,7 +1,6 @@
 #ifndef TW_H
 #define TW_H
 
-#include <iostream>
         /**///*****************************************************///
        /**///-----------------------//----------------------------///
             #include <string>      // std::string                 //
@@ -19,7 +18,7 @@ private:
     std::ofstream outputFile;
 
     void OpenOutputFile(){
-        outputFile.open ("teste1AfndAfd.out");
+        outputFile.open ("teste1AfndAfd.out", std::ios::trunc | std::ios::out);
     }
 
     void OpenInputFile(){
@@ -56,7 +55,7 @@ private:
     std::vector<std::string> getNEstates(std::string *field);
 
 public:
-        
+
     void setOutputMachine(Automata<char>);
     Automata<char> getInputMachine();
 };

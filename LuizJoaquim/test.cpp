@@ -1,8 +1,9 @@
 #include <iostream>
+#include "tester.hpp"
 #include "tableworker.hpp"
 
 
-auto test(Automata<char> a, int nOf0, int nOf1) -> void 
+auto test(Automata<char> a, int nOf0, int nOf1) -> void
 {
     std::queue<char> word = std::queue<char>();
 
@@ -59,15 +60,20 @@ auto main()->int
 
     std::cout<<"Final states : "<<a.getFinals_str()<<std::endl;
 
-    for (int ones = 0; ones <= 4; ++ones)
-    {
-        for (int zeros = 0; zeros <= 4; ++zeros)
-        {
-            test(a, ones, zeros);
-        }
-    }
-    
+    // for (int ones = 0; ones <= 4; ++ones)
+    // {
+    //     for (int zeros = 0; zeros <= 4; ++zeros)
+    //     {
+    //         test(a, ones, zeros);
+    //     }
+    // }
+
     tb.setOutputMachine(a);
+
+    Tester t;
+
+    t.test(a);
+
     return 0;
 };
 

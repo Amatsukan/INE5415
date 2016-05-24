@@ -5,17 +5,17 @@
  /**///----------------------//----------------------------///
 /**///****************************************************///
 class ExistStateException : public std::exception{
-  virtual const char* what() const throw()
-  {
-    return "State already exists in automaton";
-  }
+    virtual const char* what() const throw()
+    {
+        return "State already exists in automaton";
+    }
 };
 
 class MissingStateException : public std::exception{
-  virtual const char* what() const throw()
-  {
-    return "State does not belong to the automaton";
-  }
+    virtual const char* what() const throw()
+    {
+        return "State does not belong to the automaton";
+    }
 };
 
 //SAMPLE
