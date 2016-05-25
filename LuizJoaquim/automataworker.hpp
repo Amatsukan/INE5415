@@ -49,7 +49,7 @@ Automata<Symbol_type> AutomataWorker<Symbol_type>::determinize(Automata<Symbol_t
     std::string novoStateI_str = NameStateInOrder(novoStateI);
 
     AFD.addState(novoStateI_str);
-    AFD.toggle_inicial(novoStateI_str);
+    AFD.toggle_initial(novoStateI_str);
 
     addNextState(alphabet, novoStateI_str, novoStateI, AFD);
 
@@ -84,24 +84,19 @@ std::set<Machine::State<Symbol_type>*> AutomataWorker<Symbol_type>::getNextState
 }
 
 template <typename Symbol_type>
-std::string AutomataWorker<Symbol_type>::getStateName(std::set<Machine::State<Symbol_type>*> states){
-    std::string nome = "";
-    for(auto s:states){
-        nome += s.getName() + " ";
+std::string AutomataWorker<Symbol_type>::NameStateInOrder(std::set<Machine::State<Symbol_type>*> states){
+    std::vector<std::string> vector = getStatesVector(states);
+
+    if(vector.size() < 2){
+        return vector[0];
     }
-    return nome;
-}
 
-//É preciso para os estados terem o mesmo nome
-template <typename Symbol_type>
-std::string AutomataWorker<Symbol_type>::ordenaNomeState(std::set<Machine::State<Symbol_type>*> states){
-    std::string ret('{');
+    std::string ret("{"), aux;
 
-    std::vector<std::string> aux, vector = getStatesVector(states);
 
     for(int i = 0;i<vector.size();i++){
         if(vector[i].compare(vector[i+1]) >0 ){
-            aux = vector[i];
+            aux = vector[i];                       //SIM!!! Bubble.
             vector[i] = vector[i+1];
             vector[i+1] = aux;
         }
@@ -116,6 +111,8 @@ std::string AutomataWorker<Symbol_type>::ordenaNomeState(std::set<Machine::State
     }
 
     ret+='}';
+
+    std::cout<<ret<<std::endl;
 
     return ret;
 }
