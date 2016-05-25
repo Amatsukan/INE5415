@@ -4,27 +4,40 @@
 #include "automata.hpp"
 #include "state.hpp"
 #include <set>
+#include <vector>
 
 template <typename Symbol_type>
 
 class AutomataWorker
 {
 private:
-    void adicionaProximosEstado(std::vector<Symbol_type> alphabet,std::string stateName, std::set<Machine::State<Symbol_type>*> states, Automata<Symbol_type> AFD );
+    void addNextState(std::vector<Symbol_type> alphabet,std::string stateName, std::set<Machine::State<Symbol_type>*> states, Automata<Symbol_type> AFD );
 
     std::set<Machine::State<Symbol_type>*> getNextState(std::set<Machine::State<Symbol_type>*> states,Symbol_type c);
 
-    std::string getNomeEstado(std::set<Machine::State<Symbol_type>*> states);
+    std::string getStateName(std::set<Machine::State<Symbol_type>*> states);
 
-    std::string ordenaNomeState(std::set<Machine::State<Symbol_type>*> states);
+    std::string NameStateInOrder(std::set<Machine::State<Symbol_type>*> states);
+
+    std::vector<std::string> getStatesVector(std::set<Machine::State<Symbol_type>*> states){
+
+        std::vector<std::string> ret;
+
+        for (auto state_pair : states)
+        {
+            ret+=state_pair.seccond->getName();
+        }
+
+        return ret;
+    }
 
 public:
-	Automata<Symbol_type> determiniza(Automata<Symbol_type>);
+	Automata<Symbol_type> determinize(Automata<Symbol_type>);
 
 };
 
 template <typename Symbol_type>
-Automata<Symbol_type> AutomataWorker<Symbol_type>::determiniza(Automata<Symbol_type> AFN){
+Automata<Symbol_type> AutomataWorker<Symbol_type>::determinize(Automata<Symbol_type> AFN){
 
     std::vector<Symbol_type> alphabet = AFN.getAlphabet_vector();
 
@@ -33,30 +46,27 @@ Automata<Symbol_type> AutomataWorker<Symbol_type>::determiniza(Automata<Symbol_t
     auto novoStateI = AFN.get_state_by_name(AFN.getInitial_str()).get_epsilon_reach();
 
 
-    std::string novoStateI_str = getNomeEstado(novoStateI);
-
-    novoStateI_str = ordenaNomeState(novoStateI); //fazer
+    std::string novoStateI_str = NameStateInOrder(novoStateI);
 
     AFD.addState(novoStateI_str);
     AFD.toggle_inicial(novoStateI_str);
 
-    adicionaProximosEstado(alphabet, novoStateI_str, novoStateI, AFD);
+    addNextState(alphabet, novoStateI_str, novoStateI, AFD);
 
     return AFD;
 }
 
 template <typename Symbol_type>
-void AutomataWorker<Symbol_type>::adicionaProximosEstado(std::vector<Symbol_type> alphabet,std::string stateName, std::set<Machine::State<Symbol_type>*> states, Automata<Symbol_type> AFD ){
+void AutomataWorker<Symbol_type>::addNextState(std::vector<Symbol_type> alphabet,std::string stateName, std::set<Machine::State<Symbol_type>*> states, Automata<Symbol_type> AFD ){
     std::set<Machine::State<Symbol_type>*> nextState;
     for(Symbol_type c:alphabet){
         nextState = getNextState(states, c);
-        std::string nextState_str = getNomeEstado(nextState);
-        nextState_str = ordenaNomeState(nextState_str);
+        std::string nextState_str = NameStateInOrder(nextState_str);
         AFD.addTransition(c, stateName, nextState_str );
 
         if(!AFD.existState(nextState)){
             AFD.addState(nextState);
-            adicionaProximosEstado(alphabet, nextState_str, nextState, AFD);
+            addNextState(alphabet, nextState_str, nextState, AFD);
         }
     }
 }
@@ -74,7 +84,7 @@ std::set<Machine::State<Symbol_type>*> AutomataWorker<Symbol_type>::getNextState
 }
 
 template <typename Symbol_type>
-std::string AutomataWorker<Symbol_type>::getNomeEstado(std::set<Machine::State<Symbol_type>*> states){
+std::string AutomataWorker<Symbol_type>::getStateName(std::set<Machine::State<Symbol_type>*> states){
     std::string nome = "";
     for(auto s:states){
         nome += s.getName() + " ";
@@ -85,8 +95,29 @@ std::string AutomataWorker<Symbol_type>::getNomeEstado(std::set<Machine::State<S
 //É preciso para os estados terem o mesmo nome
 template <typename Symbol_type>
 std::string AutomataWorker<Symbol_type>::ordenaNomeState(std::set<Machine::State<Symbol_type>*> states){
+    std::string ret('{');
 
-    return std::string();
+    std::vector<std::string> aux, vector = getStatesVector(states);
+
+    for(int i = 0;i<vector.size();i++){
+        if(vector[i].compare(vector[i+1]) >0 ){
+            aux = vector[i];
+            vector[i] = vector[i+1];
+            vector[i+1] = aux;
+        }
+    }
+
+    for (auto state : aux)
+    {
+        ret+=state;
+        if(state != *(aux.end())){
+            ret+=',';
+        }
+    }
+
+    ret+='}';
+
+    return ret;
 }
 
 

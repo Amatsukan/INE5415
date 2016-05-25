@@ -72,7 +72,8 @@ Automata<char> TableWorker::getInputMachine(){
 
     std::string line;
 
-    while(std::getline(inputFile, line)){
+    // while(std::getline(inputFile, line)
+    while(inputFile >> line){
 
         trimToSeparator(&line);
 

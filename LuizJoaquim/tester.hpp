@@ -51,7 +51,7 @@ private:
         auto ret = std::vector< std::queue<char> >();
 
         if(lc() < 1){
-            std::cout<<"There is no inputs in input.in file... Skipping test"<<std::endl;
+            std::cout<<"There is no inputs in 'input.in' file... Skipping test"<<std::endl;
             return ret;
         }
 

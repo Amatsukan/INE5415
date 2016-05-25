@@ -17,9 +17,9 @@ auto main()->int
 
     std::cout<<"Final states : "<<a.getFinals_str()<<std::endl;
 
-    AutomataWorker
+    AutomataWorker<char> aw;
 
-    tb.setOutputMachine(a);
+    tb.setOutputMachine(aw.determinize(a));
 
     Tester t;
 
