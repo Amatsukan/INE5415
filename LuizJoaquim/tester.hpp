@@ -14,11 +14,22 @@
 class Tester{
 private:
 
-    std::fstream inputs;
+    std::ifstream inputs;
     std::ofstream outputs;
 
+    int lc(){
+        CloseInputFile();
+        OpenInputFile();
+        std::string filler;
+        int i;
+        for (i = 0; std::getline(inputs, filler); ++i);
+        CloseInputFile();
+        OpenInputFile();
+        return i;
+    }
+
     void OpenInputFile(){
-        inputs.open ("inputs");
+        inputs.open ("test.in");
     }
 
     void CloseInputFile(){
@@ -26,11 +37,11 @@ private:
     }
 
     void OpenOutputFile(){
-        inputs.open ("testOutput", std::ios::trunc);
+        outputs.open ("test.out", std::ios::trunc | std::ios::out);
     }
 
     void CloseOutputFile(){
-        inputs.close();
+        outputs.close();
     }
 
     std::vector< std::queue<char> > getWords(){
@@ -39,11 +50,19 @@ private:
 
         auto ret = std::vector< std::queue<char> >();
 
-        while(std::getline(inputs,tok)){
+        if(lc() < 1){
+            std::cout<<"There is no inputs in input.in file... Skipping test"<<std::endl;
+            return ret;
+        }
+
+        std::cout<<"Testing for "<<lc()<<" inputs..."<<std::endl;
+
+        while(getline(inputs,tok)){
 
             std::queue<char> actualWord;
 
             for(char c : tok){
+                if(c == '\n' and c == '\r' and c == '\0' and c == ' ') continue;
                 actualWord.push(c);
             }
 
@@ -57,11 +76,10 @@ private:
 
     std::string toString(std::queue<char> word){
         std::string ret;
-        for(int i = 0; i<word.size(); i++){
-            ret+=word.front();
+        for(int i = 0; i<=word.size(); i++){
+            ret+=(char)word.front();
             word.pop();
         }
-        ret+='\0';
 
         return ret;
     }
@@ -69,15 +87,17 @@ private:
 public:
 
     void test(Automata<char> a){
-        CloseOutputFile();
 
-        for(auto word : getWords()){
-            outputs<<toString(word);
-            outputs<<" -- ";
-            outputs<<(a.validateWord(word) ? "OK" : "NOT OK")<<std::endl;
+        auto words = getWords();
+
+        OpenOutputFile();
+        for(auto word : words){
+            outputs<<toString(word)<<" -- "<<(a.validateWord(word) ? "OK" : "NOT OK")<<std::endl;
         }
-
         CloseOutputFile();
+
+        std::cout<<"Test end!"<<std::endl;
+
     }
 
 };

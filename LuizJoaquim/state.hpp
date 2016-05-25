@@ -43,7 +43,7 @@ namespace Machine{
         std::string getName(){
             return state_name;
         }
-      
+
         std::string getLimboName(){
             return getLimboState ->getName();
         }
@@ -74,12 +74,20 @@ namespace Machine{
         std::string get_hit_by_str(Symbol_type symbol){
             std::string reached_states = "";
 
-            if(transitions.count(symbol) > 0){
+            if(transitions.count(symbol) == 1){
+
+                auto its = transitions.equal_range(symbol);
+                reached_states+=(*(its.first)).second->getName();
+
+            }else if(transitions.count(symbol) > 1){
+                reached_states+="{";
                 auto its = transitions.equal_range(symbol);
                 for (auto it=its.first; it!=its.second; ++it){
                     reached_states+=(*it).second->getName();
-                    reached_states+="\t";
+                    reached_states+=",";
                 }
+                reached_states[reached_states.size()-1] = '}';
+
             }else{
                 reached_states =  getLimboState()->getName();
             }

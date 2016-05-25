@@ -23,34 +23,32 @@ auto test(Automata<char> a, int nOf0, int nOf1) -> void
 auto main()->int
 {
     TableWorker tb;
-    //auto a = tb.getInputMachine();
+    auto a = tb.getInputMachine();
 
-    auto a = Automata<char>(std::vector<char>({'0', '1'}));
+    // auto a = Automata<char>(std::vector<char>({'0', '1'}));
 
-    a.addState("s1");
-    a.addState("s0");
-    a.addState("s2");
-    a.addState("s3");
-    a.addState("s4");
+    // a.addState("s1");
+    // a.addState("s0");
+    // a.addState("s2");
+    // a.addState("s3");
+    // a.addState("s4");
 
+    // a.addTransition('1', "s0", "s1");
+    // a.addTransition('1', "s1", "s1");
+    // // a.addTransition('1', "s1", "s4");//-----
+    // a.addTransition('1', "s2", "s2");
+    // a.addTransition('0', "s1", "s2"); //L1
+    // a.addTransition('0', "s2", "s1");
 
-    // a.addEpsilonTransition("s0","s1"); // l1 or l2
-    // a.addEpsilonTransition("s0","s3"); // l1 or l2
-    a.addTransition('1', "s0", "s1");
-    a.addTransition('1', "s1", "s1");
-    a.addTransition('1', "s2", "s2");
-    a.addTransition('0', "s1", "s2"); //L1
-    a.addTransition('0', "s2", "s1");
+    // a.addTransition('0', "s0", "s3");
+    // a.addTransition('0', "s3", "s3");
+    // a.addTransition('0', "s4", "s4");
+    // a.addTransition('1', "s3", "s4"); //L2
+    // a.addTransition('1', "s4", "s3");
 
-    a.addTransition('0', "s0", "s3");
-    a.addTransition('0', "s3", "s3");
-    a.addTransition('0', "s4", "s4");
-    a.addTransition('1', "s3", "s4"); //L2
-    a.addTransition('1', "s4", "s3");
-
-    a.toggle_final("s1");
-    a.toggle_final("s3");
-    a.toggle_initial("s0");
+    // a.toggle_final("s1");
+    // a.toggle_final("s3");
+    // a.toggle_initial("s0");
 
     std::cout<<"States : "<<a.getStates_str()<<std::endl;
 

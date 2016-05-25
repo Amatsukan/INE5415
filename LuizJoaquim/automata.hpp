@@ -69,7 +69,7 @@ public:
     bool isFinal(state_name key){
         return final_states.count(key);
     }
-    
+
     bool isInitial(state_name key){
         return (key == InitialStateName);
     }
@@ -88,7 +88,7 @@ public:
         }
 
     }
-    
+
     std::unordered_map < std::string, Machine::State<Symbol_type> > getStates(){
         return states;
     }
@@ -123,31 +123,39 @@ public:
         for(auto c : Alphabet){
             if(c == ConfigReader::getNullSlot() or c == ConfigReader::getEpsilon()) continue;
             ret+=c;
-            ret+="    ";
+            ret+="     ";
         }
 
         return ret;
     }
 
     std::vector<char> getAlphabet_vector(){
-        return Alphabet;
+        std::vector<char> ret;
+        for(auto c : Alphabet){
+            if(c == ConfigReader::getNullSlot() or c == ConfigReader::getEpsilon()) continue;
+            ret.push_back(c);
+        }
+
+        return ret;
     }
-  
+
     std::string getStateTransitions_str(std::string s){
        std::string stateT = "";
-       
-       auto spaces = [&](std::string name, int limit){
+
+       auto spaces = [](std::string name, int limit = 6){
            std::string ret;
            for(int i=0;i < limit-name.size(); i++)
-                ret += " "; 
+                ret += " ";
            return ret;
        };
-       
+
        for(char c:Alphabet){
-           std::string hitByC = get_state_by_name(s).get_hit_by_str(c);
-           stateT += hitByC + spaces(hitByC, 6);
+            if(c == ConfigReader::getNullSlot() or c == ConfigReader::getEpsilon()) continue;
+
+            std::string hitByC = get_state_by_name(s).get_hit_by_str(c);
+            stateT += hitByC + spaces(hitByC);
        }
-       
+
        return stateT;
    }
 

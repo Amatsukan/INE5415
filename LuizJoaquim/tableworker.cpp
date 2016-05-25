@@ -17,11 +17,29 @@ std::vector<std::string> TableWorker::getNEstates(std::string *field){
 
 void TableWorker::setOutputMachine(Automata<char> a){
     OpenOutputFile();
-    
+
     std::string alphabetLine = "#     " + a.getAlphabet();
-    outputFile << alphabetLine << "\n";
-    
+    outputFile << alphabetLine << std::endl;
+
     auto states = a.getStates();
+
+    auto spaces = [&](std::string state, int limit=6){
+        std::string spaces;
+
+        if(a.isInitial(state)){
+            limit-=2;
+        }
+
+        if(a.isFinal(state)){
+            limit-=1;
+        }
+
+        while(limit --> state.size()){
+            spaces+=" ";
+        }
+
+        return spaces;
+    };
 
     for(auto s:states){
         std::string sName = s.second.getName();
@@ -32,17 +50,17 @@ void TableWorker::setOutputMachine(Automata<char> a){
         if(a.isFinal(sName)){
             estado_str += ConfigReader::getFinalStateChar();
         }
-        estado_str += sName + "    ";
+        estado_str += sName + spaces(sName);
         estado_str += a.getStateTransitions_str(sName);
-        outputFile << estado_str << "\n";           
+        outputFile << estado_str << std::endl;
     }
-    
+
     CloseFiles();
 }
 
 Automata<char> TableWorker::getInputMachine(){
     OpenInputFile();
-    
+
     std::string alphabetLine;
     std::getline(inputFile, alphabetLine);
 
