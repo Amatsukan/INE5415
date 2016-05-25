@@ -1,54 +1,13 @@
 #include <iostream>
 #include "tester.hpp"
 #include "tableworker.hpp"
-
-
-auto test(Automata<char> a, int nOf0, int nOf1) -> void
-{
-    std::queue<char> word = std::queue<char>();
-
-    std::cout<<"Test for "<<nOf0<<" zeros and "<<nOf1<<" ones is:"<<std::endl;
-
-    while(nOf0-->0){
-        word.push('0');
-    }
-    while(nOf1-->0){
-        word.push('1');
-    }
-
-    std::cout<<(a.validateWord(word) ? " V" : " Inv")<<"alid!"<<std::endl;
-}
-
+#include "automataworker.hpp"
 
 auto main()->int
 {
     TableWorker tb;
     auto a = tb.getInputMachine();
 
-    // auto a = Automata<char>(std::vector<char>({'0', '1'}));
-
-    // a.addState("s1");
-    // a.addState("s0");
-    // a.addState("s2");
-    // a.addState("s3");
-    // a.addState("s4");
-
-    // a.addTransition('1', "s0", "s1");
-    // a.addTransition('1', "s1", "s1");
-    // // a.addTransition('1', "s1", "s4");//-----
-    // a.addTransition('1', "s2", "s2");
-    // a.addTransition('0', "s1", "s2"); //L1
-    // a.addTransition('0', "s2", "s1");
-
-    // a.addTransition('0', "s0", "s3");
-    // a.addTransition('0', "s3", "s3");
-    // a.addTransition('0', "s4", "s4");
-    // a.addTransition('1', "s3", "s4"); //L2
-    // a.addTransition('1', "s4", "s3");
-
-    // a.toggle_final("s1");
-    // a.toggle_final("s3");
-    // a.toggle_initial("s0");
 
     std::cout<<"States : "<<a.getStates_str()<<std::endl;
 
@@ -58,13 +17,7 @@ auto main()->int
 
     std::cout<<"Final states : "<<a.getFinals_str()<<std::endl;
 
-    // for (int ones = 0; ones <= 4; ++ones)
-    // {
-    //     for (int zeros = 0; zeros <= 4; ++zeros)
-    //     {
-    //         test(a, ones, zeros);
-    //     }
-    // }
+    AutomataWorker
 
     tb.setOutputMachine(a);
 
@@ -74,6 +27,23 @@ auto main()->int
 
     return 0;
 };
+
+
+// auto test(Automata<char> a, int nOf0, int nOf1) -> void
+// {
+//     std::queue<char> word = std::queue<char>();
+
+//     std::cout<<"Test for "<<nOf0<<" zeros and "<<nOf1<<" ones is:"<<std::endl;
+
+//     while(nOf0-->0){
+//         word.push('0');
+//     }
+//     while(nOf1-->0){
+//         word.push('1');
+//     }
+
+//     std::cout<<(a.validateWord(word) ? " V" : " Inv")<<"alid!"<<std::endl;
+// }
 
 
 // auto main()->int
@@ -104,22 +74,14 @@ auto main()->int
 //     a.toggle_final("s0");
 //     a.toggle_final("s2");
 
-//     std::queue<char> word = std::queue<char>();
 
-//     word.push('0');
-//     word.push('1');
-//     word.push('0');
-//     word.push('0');
-//     word.push('1');
-//     word.push('1');
-//     word.push('0');
-//     word.push('1');
-//     word.push('0');
-//     word.push('1');
-//     word.push('0');
-//     word.push('0');
-//     word.push('1');
-//     word.push('1');
+//     for (int ones = 0; ones <= 4; ++ones)
+//     {
+//         for (int zeros = 0; zeros <= 4; ++zeros)
+//         {
+//             test(a, ones, zeros);
+//         }
+//     }
 
 //     std::cout<<(a.validateWord(word) ? "V" : "Inv")<<"alid!"<<std::endl;
 
