@@ -23,10 +23,11 @@ private:
     std::string InitialStateName;
 
 public:
-    Automata(std::string s0){ addState(s0); }
+
     Automata(std::vector< char > Alp) : Alphabet(Alp){}
 
     void addState(std::string name, std::string obs){
+        std::cout<<"MAQUINA Statas NAme: "<< name <<std::endl;
         if(existState(name))
             throw ExistStateException();
 
@@ -41,6 +42,7 @@ public:
     }
 
     void addState(std::string name){
+//         std::cout<<"Statas NAme: "<< name <<std::endl;
         addState(name, "");
     }
 
@@ -68,6 +70,14 @@ public:
 
     bool isFinal(state_name key){
         return final_states.count(key);
+    }
+    
+    bool containsFinal(std::vector<std::string> stateSet){
+        for(auto state : stateSet){
+            if(isFinal(state)) return true;
+        }
+        
+        return false;
     }
 
     bool isInitial(state_name key){
@@ -123,7 +133,7 @@ public:
         for(auto c : Alphabet){
             if(c == ConfigReader::getNullSlot() or c == ConfigReader::getEpsilon()) continue;
             ret+=c;
-            ret+="     ";
+            ret+=" ";
         }
 
         return ret;
@@ -142,18 +152,11 @@ public:
     std::string getStateTransitions_str(std::string s){
        std::string stateT = "";
 
-       auto spaces = [](std::string name, int limit = 6){
-           std::string ret;
-           for(int i=0;i < limit-name.size(); i++)
-                ret += " ";
-           return ret;
-       };
-
        for(char c:Alphabet){
             if(c == ConfigReader::getNullSlot() or c == ConfigReader::getEpsilon()) continue;
 
             std::string hitByC = get_state_by_name(s).get_hit_by_str(c);
-            stateT += hitByC + spaces(hitByC);
+            stateT += ConfigReader::spaces(hitByC);
        }
 
        return stateT;

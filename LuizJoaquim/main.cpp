@@ -17,13 +17,23 @@ auto main()->int
 
     std::cout<<"Final states : "<<a.getFinals_str()<<std::endl;
 
-    AutomataWorker<char> aw;
+    AutomataWorker<char> aw(a);
+    
+    a =  aw.determinize();
+    
+    std::cout<<"States : "<<a.getStates_str()<<std::endl;
 
-    tb.setOutputMachine(aw.determinize(a));
+    std::cout<<"Alphabeth : "<<a.getAlphabet()<<std::endl;
 
-    Tester t;
+    std::cout<<"Initial state : "<<a.getInitial_str()<<std::endl;
 
-    t.test(a);
+    std::cout<<"Final states : "<<a.getFinals_str()<<std::endl;
+  
+//     tb.setOutputMachine(a);
+
+//     Tester t;
+
+//     t.test(a);
 
     return 0;
 };

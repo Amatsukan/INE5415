@@ -1,6 +1,5 @@
 #include "tableworker.hpp"
 #include <sstream>
-#include "config.hpp"
 
 std::vector<std::string> TableWorker::getNEstates(std::string *field){
     std::vector<std::string> ret;
@@ -18,39 +17,32 @@ std::vector<std::string> TableWorker::getNEstates(std::string *field){
 void TableWorker::setOutputMachine(Automata<char> a){
     OpenOutputFile();
 
-    std::string alphabetLine = "#     " + a.getAlphabet();
+    std::string alphabetLine = ConfigReader::spaces(std::to_string((char)ConfigReader::getNullSlot()));
+    
+    for(char c : a.getAlphabet_vector()){
+           alphabetLine = ConfigReader::spaces(std::to_string(c));
+    }
+    
     outputFile << alphabetLine << std::endl;
 
     auto states = a.getStates();
 
-    auto spaces = [&](std::string state, int limit=6){
-        std::string spaces;
-
-        if(a.isInitial(state)){
-            limit-=2;
-        }
-
-        if(a.isFinal(state)){
-            limit-=1;
-        }
-
-        while(limit --> state.size()){
-            spaces+=" ";
-        }
-
-        return spaces;
-    };
-
     for(auto s:states){
         std::string sName = s.second.getName();
         std::string estado_str = "";
+        
+        short op = ConfigReader::NONE;
+      
         if(a.isInitial(sName)){
             estado_str += ConfigReader::getInitialStateString();
+            op += ConfigReader::INITIAL_STATE;
         }
         if(a.isFinal(sName)){
             estado_str += ConfigReader::getFinalStateChar();
+            op += ConfigReader::FINAL_STATE;
         }
-        estado_str += sName + spaces(sName);
+      
+        estado_str += ConfigReader::spaces(sName, op);
         estado_str += a.getStateTransitions_str(sName);
         outputFile << estado_str << std::endl;
     }
@@ -72,8 +64,7 @@ Automata<char> TableWorker::getInputMachine(){
 
     std::string line;
 
-    // while(std::getline(inputFile, line)
-    while(inputFile >> line){
+    while(std::getline(inputFile, line)){
 
         trimToSeparator(&line);
 

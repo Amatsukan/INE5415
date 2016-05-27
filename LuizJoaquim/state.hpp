@@ -27,14 +27,15 @@ namespace Machine{
         std::set<State<Symbol_type>*> epsilonTransitions;
 
         State<Symbol_type>* getLimboState(){
+        std::cout<<"LIMBO" <<std::endl;
             static State<Symbol_type>* s = new State<Symbol_type>(ConfigReader::getNotTransition() ,"Limbo state: created automatically when consuming an unknown entry");
             return s;
         }
 
     public:
-        State(std::string name) : state_name(name){}
+        State(std::string name) : state_name(name){std::cout<<"Novo Statas NAme 1: "<< name <<std::endl;}
 
-        State(std::string name, std::string obs) : state_name(name), obs(obs){}
+        State(std::string name, std::string obs) : state_name(name), obs(obs){std::cout<<"Novo Statas NAme 2: "<< name <<std::endl;}
 
         std::string getObs(){
             return obs;
@@ -55,17 +56,27 @@ namespace Machine{
         std::set<State<Symbol_type>*> get_epsilon_reach(){
             return epsilonTransitions;
         }
+        
+         std::vector<std::string> get_epsilon_close(){
+             std::vector<std::string> ret;
+             ret.push_back(getName());
+             for(auto state : epsilonTransitions){
+                 ret.push_back(state->getName());
+             }
+             
+             return ret;
+        }
 
         std::set<State<Symbol_type>*> get_hit_by(Symbol_type symbol){
-            std::vector< State<Symbol_type>* > reached_states;
+            std::set< State<Symbol_type>* > reached_states;
 
             if(transitions.count(symbol) > 0){
                 auto its = transitions.equal_range(symbol);
                 for (auto it=its.first; it!=its.second; ++it){
-                    reached_states.push_back((*it).second);;
+                    reached_states.insert((*it).second);;
                 }
             }else{
-                reached_states.push_back(getLimboState());
+                reached_states.insert(getLimboState());
             }
 
             return reached_states;
@@ -107,21 +118,17 @@ namespace Machine{
             return reached_states;
         }
 
-        std::vector< State<Symbol_type>* > make_transitions(std::queue<Symbol_type> word){
-            std::vector< State<Symbol_type>* > reached_states;
+        std::set< State<Symbol_type>* > make_transitions(std::queue<Symbol_type> word){
+            std::set< State<Symbol_type>* > reached_states;
 
 
             if(epsilonTransitions.size() > 0){
                 for (auto it=epsilonTransitions.begin(); it!=epsilonTransitions.end(); ++it){
-                        std::vector< State<Symbol_type>* > results = (*it)->make_transitions(word);
-                        reached_states.insert( reached_states.end(), results.begin(), results.end() );
+                        std::set< State<Symbol_type>* > results = (*it)->make_transitions(word);
+                        reached_states.insert( results.begin(), results.end() );
                     }
-            }
-
-
-
-            if(word.empty()){
-                reached_states.push_back(this);
+            }if(word.empty()){
+                reached_states.insert(this);
                 return reached_states;
 
             }else{
@@ -132,11 +139,11 @@ namespace Machine{
                 if(transitions.count(token) > 0){
                     auto its = transitions.equal_range(token);
                     for (auto it=its.first; it!=its.second; ++it){
-                        std::vector< State<Symbol_type>* > results = (*it).second->make_transitions(word);
-                        reached_states.insert( reached_states.end(), results.begin(), results.end() );
+                        std::set< State<Symbol_type>* > results = (*it).second->make_transitions(word);
+                        reached_states.insert( results.begin(), results.end() );
                     }
                 }else{
-                    reached_states.push_back(getLimboState());
+                    reached_states.insert(getLimboState());
                 }
              }
 

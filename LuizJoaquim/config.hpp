@@ -19,6 +19,7 @@
         std::string initialString;
         char NullSlotTable;
         std::string NotTransition;
+        int OutTableColumnLength;
     }Config;
 
 class ConfigReader{
@@ -73,6 +74,8 @@ private:
                 c.NullSlotTable= getValue<char>(line);
             }else if (line.find("NotTransitionIdentifier") != std::string::npos) {
                 c.NotTransition= getValue<std::string>(line);
+            }else if (line.find("OutTableColumnLength") != std::string::npos) {
+                c.OutTableColumnLength = std::stoi(getValue<std::string>(line));
             }
         }
         c.initialized = true;
@@ -91,6 +94,26 @@ public:
 
     //     return me;
     // }
+    
+    enum OP{
+        FINAL_STATE = 0x1,
+        INITIAL_STATE =0x2,
+        NONE = 0x0
+    };
+    
+    static std::string spaces(std::string stateName,short op=NONE,int limit = ConfigReader::getOutTableColumnLength()){
+        std::string spaces = stateName;
+        limit -= stateName.size();
+      
+        if(limit <= 0)
+        spaces+=" ";
+
+        while(limit --> stateName.size()){
+            spaces+=".";
+        }
+
+        return spaces;
+    } 
 
     static ConfigReader& Instance()
     {
@@ -114,6 +137,9 @@ public:
     }
     static std::string getNotTransition(){
         return Instance().c.NotTransition;
+    }
+    static int getOutTableColumnLength(){
+        return Instance().c.OutTableColumnLength;
     }
 
 };

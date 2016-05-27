@@ -3,9 +3,11 @@
 #
 #Obs: InitialStateIdentifier e NotTransitionIdentifier podem ser uma string de 2 chars
 #Obs2: Nenhum valor pode ficar vazio
+#Obs3: OutTableColumnLength sempre deve ser um inteiro
 
 EpsilonIdentifier:&
 FinalStateIdentifier:*
 InitialStateIdentifier:->
 FirstTableNullSlotId:#
 NotTransitionIdentifier:--
+OutTableColumnLength:6
