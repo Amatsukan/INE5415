@@ -1,8 +1,9 @@
 #ifndef TW_H
 #define TW_H
 
-        /**///*****************************************************///
-       /**///-----------------------//----------------------------///
+        /**///******************************************************///
+       /**///------------------------//----------------------------///
+             #include "config.hpp"  // ConfigReader                //
             #include <string>      // std::string                 //
            #include <fstream>     // std::multimap               //
           #include "automata.hpp"// Automaton                   //
@@ -10,7 +11,6 @@
         #include <sstream>     // std::stringstream           //
   /**///______________________//____________________________///
  /**///****************************************************///
-#include "config.hpp"
 
 class TableWorker{
 private:
@@ -56,7 +56,7 @@ private:
     std::vector<std::string> getNEstates(std::string *field);
 
 public:
- 
+
     void setOutputMachine(Automata<char>);
     Automata<char> getInputMachine();
 };

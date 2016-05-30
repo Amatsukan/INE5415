@@ -1,11 +1,9 @@
 #ifndef STAT_H
 #define STAT_H
 
-#include <iostream>
-#include "config.hpp"
-
-       /**///*****************************************************///
-      /**///-----------------------//----------------------------///
+       /**///******************************************************///
+      /**///------------------------//----------------------------///
+          #include "config.hpp"    // ConfigReader                //
          #include <string>        // std::string                 //
         #include <map>           // std::multimap               //
        #include <set>           // std::set                    //
@@ -27,15 +25,14 @@ namespace Machine{
         std::set<State<Symbol_type>*> epsilonTransitions;
 
         State<Symbol_type>* getLimboState(){
-        std::cout<<"LIMBO" <<std::endl;
             static State<Symbol_type>* s = new State<Symbol_type>(ConfigReader::getNotTransition() ,"Limbo state: created automatically when consuming an unknown entry");
             return s;
         }
 
     public:
-        State(std::string name) : state_name(name){std::cout<<"Novo Statas NAme 1: "<< name <<std::endl;}
+        State(std::string name) : state_name(name){}
 
-        State(std::string name, std::string obs) : state_name(name), obs(obs){std::cout<<"Novo Statas NAme 2: "<< name <<std::endl;}
+        State(std::string name, std::string obs) : state_name(name), obs(obs){}
 
         std::string getObs(){
             return obs;
@@ -56,14 +53,14 @@ namespace Machine{
         std::set<State<Symbol_type>*> get_epsilon_reach(){
             return epsilonTransitions;
         }
-        
+
          std::vector<std::string> get_epsilon_close(){
              std::vector<std::string> ret;
              ret.push_back(getName());
              for(auto state : epsilonTransitions){
                  ret.push_back(state->getName());
              }
-             
+
              return ret;
         }
 

@@ -1,99 +1,87 @@
-#include <iostream>
-#include "tester.hpp"
-#include "tableworker.hpp"
-#include "automataworker.hpp"
 
-auto main()->int
+   /**///***************************************************************///
+  /**///---------------------------------//----------------------------///
+           #include <iostream>          // std::cout                   //
+          #include <unistd.h>          // getopt()                    //
+         #include "tester.hpp"        // Tester                      //
+        #include "tableworker.hpp"   // TableWorker                 //
+       #include "automataworker.hpp"// AutomataWorker              //
+ /**///----------------------------//----------------------------///
+/**///**********************************************************///
+
+void help(){
+    std::cout<<"HomeWork1 - INE5415 : Theory of computing"<<std::endl;
+    std::cout<<std::endl<<"First set your machine in \"test1AfndAfd.in\" file"<<std::endl;
+    std::cout<<std::endl<<"Argument flags:"<<std::endl;
+    std::cout<<"\t-h: Show this informations."<<std::endl;
+    std::cout<<"\t-t: Test all inputs in \"test.in\" and put all results in \"test.out.\""<<std::endl;
+    std::cout<<"\t-o: Disable all output file write."<<std::endl;
+    std::cout<<"\t-d: Set deterministic equivalent automaton in \"test1AfndAfd.out\" and make tests for this machine."<<std::endl;
+    std::cout<<"\t-m: Minimization on."<<std::endl;
+}
+
+bool flagTestInputList = false;
+bool flagSetOutputMachine = true;
+bool flagDeterminize = false;
+bool flagMinimize = false;
+
+
+void setOpt(int argc, char** argv)
 {
+    // Shut GetOpt error messages down (return '?'):
+    int opt;
+    opterr = 0;
+
+    // Retrieve the options:
+    while ( (opt = getopt(argc, argv, "todmh")) != -1 ) {  // for each option...
+        switch ( opt ) {
+            case 'h':
+                std::cout<<"Help menu:"<<std::endl;
+                help();
+                exit(0);
+            case 't':
+                    flagTestInputList = true;
+                break;
+            case 'o':
+                    flagSetOutputMachine = false;
+                break;
+            case 'd':
+                    flagDeterminize = true;
+                break;
+            case 'm':
+                    flagMinimize = true;
+                break;
+            case '?':  // unknown option...
+                    std::cerr << "Unknown option: '" << char(optopt) << "'!" << std::endl;
+                break;
+        }
+    }
+}
+
+auto main(int argc, char** argv) -> int
+{
+    setOpt(argc, argv);
+
     TableWorker tb;
-    auto a = tb.getInputMachine();
+    auto automata = tb.getInputMachine();
 
+    if(flagMinimize){
+        std::cout<<"Minimization : NOT DONE YET, comming soon!!!"<<std::endl;
+    }
 
-    std::cout<<"States : "<<a.getStates_str()<<std::endl;
+    if(flagDeterminize){
+        AutomataWorker<char> aw(automata);
+        automata =  aw.determinize();
+    }
 
-    std::cout<<"Alphabeth : "<<a.getAlphabet()<<std::endl;
+    if(flagTestInputList and flagSetOutputMachine){
+        Tester t;
+        t.test(automata);
+    }
 
-    std::cout<<"Initial state : "<<a.getInitial_str()<<std::endl;
-
-    std::cout<<"Final states : "<<a.getFinals_str()<<std::endl;
-
-    AutomataWorker<char> aw(a);
-    
-    a =  aw.determinize();
-    
-    std::cout<<"States : "<<a.getStates_str()<<std::endl;
-
-    std::cout<<"Alphabeth : "<<a.getAlphabet()<<std::endl;
-
-    std::cout<<"Initial state : "<<a.getInitial_str()<<std::endl;
-
-    std::cout<<"Final states : "<<a.getFinals_str()<<std::endl;
-  
-//     tb.setOutputMachine(a);
-
-//     Tester t;
-
-//     t.test(a);
+    if(flagSetOutputMachine){
+        tb.setOutputMachine(automata);
+    }
 
     return 0;
-};
-
-
-// auto test(Automata<char> a, int nOf0, int nOf1) -> void
-// {
-//     std::queue<char> word = std::queue<char>();
-
-//     std::cout<<"Test for "<<nOf0<<" zeros and "<<nOf1<<" ones is:"<<std::endl;
-
-//     while(nOf0-->0){
-//         word.push('0');
-//     }
-//     while(nOf1-->0){
-//         word.push('1');
-//     }
-
-//     std::cout<<(a.validateWord(word) ? " V" : " Inv")<<"alid!"<<std::endl;
-// }
-
-
-// auto main()->int
-// {
-//     auto a = Automata<char>("ini");
-
-//     // L1: (number of zeros)%2 = 0
-//     // L2: (number of ones)%2 = 0
-
-//     a.addState("s1");
-//     a.addState("s0");
-//     a.addState("s2");
-//     a.addState("s3");
-
-//     a.addEpsilonTransition("ini","s0"); // l1 or l2
-//     a.addEpsilonTransition("ini","s2"); // l1 or l2
-
-//     a.addTransition('0', "s0", "s1");
-//     a.addTransition('0', "s1", "s0");
-//     a.addTransition('1', "s0", "s0"); //L1
-//     a.addTransition('1', "s1", "s1");
-
-//     a.addTransition('1', "s2", "s3");
-//     a.addTransition('1', "s3", "s2");
-//     a.addTransition('0', "s2", "s2"); //L2
-//     a.addTransition('0', "s3", "s3");
-
-//     a.toggle_final("s0");
-//     a.toggle_final("s2");
-
-
-//     for (int ones = 0; ones <= 4; ++ones)
-//     {
-//         for (int zeros = 0; zeros <= 4; ++zeros)
-//         {
-//             test(a, ones, zeros);
-//         }
-//     }
-
-//     std::cout<<(a.validateWord(word) ? "V" : "Inv")<<"alid!"<<std::endl;
-
-//     return 0;
-// };
+}

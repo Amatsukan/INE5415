@@ -1,16 +1,13 @@
 #ifndef cfg_H
 #define cfg_H
 
-#include <iostream>
-#include <algorithm>
-#include <sstream>
-     /**///*****************************************************///
-    /**///-----------------------//----------------------------///
+     /**///******************************************************///
+    /**///------------------------//----------------------------///
+          #include <sstream>     // std::stringstream           //
          #include <string>      // std::string                 //
-        #include <fstream>     // std::multimap               //
-       #include "automata.hpp"// Automaton                   //
-  /**///_____________________//____________________________///
- /**///***************************************************///
+        #include <fstream>     // std::ifstream               //
+  /**///______________________//____________________________///
+ /**///****************************************************///
 
     typedef struct {
         bool initialized = false;
@@ -94,26 +91,34 @@ public:
 
     //     return me;
     // }
-    
+
     enum OP{
         FINAL_STATE = 0x1,
-        INITIAL_STATE =0x2,
+        INITIAL_STATE = 0x2,
         NONE = 0x0
     };
-    
-    static std::string spaces(std::string stateName,short op=NONE,int limit = ConfigReader::getOutTableColumnLength()){
+
+    static std::string spaces(std::string stateName = "#",short op=NONE,int limit = ConfigReader::getOutTableColumnLength()){
         std::string spaces = stateName;
         limit -= stateName.size();
-      
-        if(limit <= 0)
-        spaces+=" ";
+
+        if((op & FINAL_STATE) == FINAL_STATE){
+            limit-=1;
+        }
+
+        if((op & INITIAL_STATE) == INITIAL_STATE){
+            limit-=2;
+        }
+
+        if(limit-stateName.size() <= 0)
+            spaces+=" ";
 
         while(limit --> stateName.size()){
-            spaces+=".";
+            spaces+=" ";
         }
 
         return spaces;
-    } 
+    }
 
     static ConfigReader& Instance()
     {

@@ -27,7 +27,6 @@ public:
     Automata(std::vector< char > Alp) : Alphabet(Alp){}
 
     void addState(std::string name, std::string obs){
-        std::cout<<"MAQUINA Statas NAme: "<< name <<std::endl;
         if(existState(name))
             throw ExistStateException();
 
@@ -71,12 +70,12 @@ public:
     bool isFinal(state_name key){
         return final_states.count(key);
     }
-    
+
     bool containsFinal(std::vector<std::string> stateSet){
         for(auto state : stateSet){
             if(isFinal(state)) return true;
         }
-        
+
         return false;
     }
 

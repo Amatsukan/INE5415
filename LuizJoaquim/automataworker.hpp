@@ -35,9 +35,9 @@ private:
 	Automata<Symbol_type> AFN;
 	Automata<Symbol_type> AFD;
 public:
-	
+
 	AutomataWorker(Automata<Symbol_type> a) : AFN(a), AFD(a.getAlphabet_vector()){};
-	
+
 	Automata<Symbol_type> determinize();
 };
 
@@ -66,9 +66,9 @@ void AutomataWorker<Symbol_type>::addNextState(std::string stateName, std::vecto
  	auto alphabet = AFD.getAlphabet_vector();
     for(Symbol_type c:alphabet){
 //          nextState = getNextState(states, c);
-		
+
 // 		 \\\\\\\\
-		 
+
 	auto contains = [nextState] (std::string nome){
 		for(auto s : nextState)
 			if(s == nome)
@@ -76,7 +76,7 @@ void AutomataWorker<Symbol_type>::addNextState(std::string stateName, std::vecto
 		return false;
 	};
     for(auto s: states){
-		
+
         for(auto newS: AFN.get_state_by_name(s).get_hit_by(c)){
 			if(newS->getName() == ConfigReader::getNotTransition())
 				continue;
@@ -87,20 +87,20 @@ void AutomataWorker<Symbol_type>::addNextState(std::string stateName, std::vecto
 			}
 		}
     }
-		 
+
 // 		 \\\\\\\\\\
-		 
-		 
-		 
-		 
-		
+
+
+
+
+
        	std::string nextState_str = NameStateInOrder(nextState);
-		 
+
         if(!AFD.existState(nextState_str)){
             AFD.addState(nextState_str);
             addNextState(nextState_str, nextState);
         }
-		
+
 		AFD.addTransition(c, stateName, nextState_str);
      }
 }
@@ -115,7 +115,7 @@ std::vector<std::string> AutomataWorker<Symbol_type>::getNextState(std::vector<s
 		return false;
 	};
     for(auto s: states){
-	
+
 		std::cout<<"Statas size: "<<c<<std::endl;
         for(auto newS: AFN.get_state_by_name(s).get_hit_by(c)){
             if(contains(newS->getName())){
@@ -134,10 +134,10 @@ std::string AutomataWorker<Symbol_type>::NameStateInOrder(std::vector<std::strin
 	if(vector.size() > 2){
  		ret+="{";
     }
-	
-	
+
+
 	std::sort(vector.begin(), vector.end());
-	
+
     for (auto state : vector)
     {
         ret+=state;
@@ -145,11 +145,11 @@ std::string AutomataWorker<Symbol_type>::NameStateInOrder(std::vector<std::strin
             ret+=',';
         }
     }
-	
+
     if(vector.size() > 2){
  		 ret+='}';
     }
-   
+
     std::cout<<ret<<std::endl;
 
     return ret;
