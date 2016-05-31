@@ -92,7 +92,9 @@ namespace Machine{
                 auto first = epsilonTransitions.begin(), last = epsilonTransitions.end();
                 for (auto it=first; it!=last; ++it){
                     reached_states+=(*it)->getName();
-                    reached_states+=",";
+                    auto it_cpy = it;
+                    if( it_cpy++ != last )
+                        reached_states+=",";
                 }
                 reached_states[reached_states.size()-1] = '}';
 

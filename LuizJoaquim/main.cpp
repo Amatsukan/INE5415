@@ -15,7 +15,7 @@ void help(){
     std::cout<<std::endl<<"Argument flags:"<<std::endl;
     std::cout<<"\t-h: Show this informations."<<std::endl;
     std::cout<<"\t-t: Test all inputs in \"test.in\" and put all results in \"test.out.\""<<std::endl;
-    std::cout<<"\t-o: Disable all output file write."<<std::endl;
+    std::cout<<"\t-o: Disable machine out file write.(\"test1AfndAfd.out\")"<<std::endl;
     std::cout<<"\t-d: Set deterministic equivalent automaton in \"test1AfndAfd.out\" and make tests for this machine."<<std::endl;
     std::cout<<"\t-m: Minimization on."<<std::endl;
 }
@@ -25,6 +25,11 @@ bool flagSetOutputMachine = true;
 bool flagDeterminize = false;
 bool flagMinimize = false;
 
+//mão faça isso em casa '-'
+//faço mas não aconselho kkkkkkkkk
+namespace std{
+    string tab = "\t";
+};
 
 void setOpt(int argc, char** argv)
 {
@@ -51,16 +56,25 @@ void setOpt(int argc, char** argv)
             case 'm':
                     flagMinimize = true;
                 break;
-            case '?':  // unknown option...
+            default:  // unknown option...
                     std::cerr << "Unknown option: '" << char(optopt) << "'!" << std::endl;
                 break;
         }
     }
-}
+};
 
 template<typename T>
 void info(Automata<T> automaton){
 
+    std::cout<<"Machine info:"<<std::endl;
+
+    std::cout<<std::tab<<"States : "<<automaton.getStates_str()<<std::endl;
+
+    std::cout<<std::tab<<"Alphabeth : "<<automaton.getAlphabet()<<std::endl;
+
+    std::cout<<std::tab<<"Initial state : "<<automaton.getInitial_str()<<std::endl;
+
+    std::cout<<std::tab<<"Final states : "<<automaton.getFinals_str()<<std::endl;
 }
 
 auto main(int argc, char** argv) -> int
@@ -70,7 +84,9 @@ auto main(int argc, char** argv) -> int
     TableWorker tb;
     auto automata = tb.getInputMachine();
 
+    std::cout<<"Input machine info:"<<std::endl;
 
+    info(automata);
 
     if(flagMinimize){
         std::cout<<"Minimization : NOT DONE YET, comming soon!!!"<<std::endl;
@@ -79,14 +95,17 @@ auto main(int argc, char** argv) -> int
     if(flagDeterminize){
         AutomataWorker<char> aw(automata);
         automata =  aw.determinize();
+        std::cout<<"Deterministic machine info:"<<std::endl;
+        info(automata);
     }
 
-    if(flagTestInputList and flagSetOutputMachine){
+    if(flagTestInputList){
         Tester t;
         t.test(automata);
     }
 
     if(flagSetOutputMachine){
+        std::cout<<"Write machine in \"test1AfndAfd.in\" file..."<<std::endl;
         tb.setOutputMachine(automata);
     }
 

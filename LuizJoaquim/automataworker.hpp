@@ -55,7 +55,7 @@ Automata<Symbol_type> AutomataWorker<Symbol_type>::determinize(){
 			AFD.toggle_final(newStateI_str);
 		}
 
-     //addNextState(newStateI_str, newStateI);
+    addNextState(newStateI_str, newStateI);
 
     return AFD;
 }
@@ -129,18 +129,25 @@ std::vector<std::string> AutomataWorker<Symbol_type>::getNextState(std::vector<s
 
 template <typename Symbol_type>
 std::string AutomataWorker<Symbol_type>::NameStateInOrder(std::vector<std::string> vector){
-//     std::vector<std::string> vector = getNameStatesVector(states);
+
     std::string ret = "";
 	if(vector.size() > 2){
  		ret+="{";
     }
 
 
-	std::sort(vector.begin(), vector.end());
+	std::sort(
+        vector.begin(),
+        vector.end(),
+        [](const std::string & a, const std::string & b) -> bool
+        {
+            return a < b;
+        }
+    );
 
     for (auto state : vector)
     {
-        ret+=state;
+        ret+=std::string(state);
         if(state != vector.at(vector.size()-1)){
             ret+=',';
         }

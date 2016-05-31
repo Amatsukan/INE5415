@@ -35,13 +35,13 @@ private:
 
     bool isInitial(std::string *stateName);
 
-    void trimToSeparator(std::string *line, char separator = '|');
+    void trimToSeparator(std::string *line, char separator = ' ');
 
     template<typename T>
     void Insert(std::string tok, std::vector<T> *vector);
 
     template<typename type>
-    std::vector<type> tokenize(std::string line, char separator = '|'){
+    std::vector<type> tokenize(std::string line, char separator = ' '){
         std::vector<type> internal;
         std::stringstream ss(line); // Turn the string into a stream.
         std::string tok;

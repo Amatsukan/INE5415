@@ -98,7 +98,13 @@ public:
         NONE = 0x0
     };
 
-    static std::string spaces(std::string stateName = "#",short op=NONE,int limit = ConfigReader::getOutTableColumnLength()){
+    static std::string spaces( std::string stateName = std::string(1,ConfigReader::getNullSlot()),
+                               short op=NONE,int limit = ConfigReader::getOutTableColumnLength()){
+
+        if(limit-stateName.size() < 0){
+            return stateName+" ";
+        }
+
         std::string spaces = stateName;
         limit -= stateName.size();
 
