@@ -2,12 +2,12 @@
 01 -- NOT OK
 10 -- NOT OK
 11 -- OK
-101 -- OK
-0101 -- OK
+101 -- NOT OK
+0101 -- NOT OK
 1010101 -- OK
 0110101 -- NOT OK
 1010 -- NOT OK
-1 -- OK
+1 -- NOT OK
 0 -- OK
-101 -- OK
+101 -- NOT OK
 0101010 -- OK

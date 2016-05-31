@@ -55,7 +55,7 @@ Automata<Symbol_type> AutomataWorker<Symbol_type>::determinize(){
 			AFD.toggle_final(newStateI_str);
 		}
 
-     addNextState(newStateI_str, newStateI);
+     //addNextState(newStateI_str, newStateI);
 
     return AFD;
 }

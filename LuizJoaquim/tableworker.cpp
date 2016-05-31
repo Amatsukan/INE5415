@@ -21,6 +21,9 @@ void TableWorker::setOutputMachine(Automata<char> a){
     for(char c : a.getAlphabet_vector()){
            alphabetLine += ConfigReader::spaces(std::string(1, c));
     }
+    if(a.isNonDeterministic()){
+        alphabetLine += std::string(1, ConfigReader::getEpsilon());
+    }
 
     outputFile << alphabetLine << std::endl;
 
@@ -43,6 +46,11 @@ void TableWorker::setOutputMachine(Automata<char> a){
 
         estado_str += ConfigReader::spaces(sName, op);
         estado_str += a.getStateTransitions_str(sName);
+
+        if(a.isNonDeterministic()){
+            estado_str += a.get_state_by_name(sName).get_hit_by_epsilon_str();
+        }
+
         outputFile << estado_str << std::endl;
     }
 

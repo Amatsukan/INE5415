@@ -110,8 +110,7 @@ public:
             limit-=2;
         }
 
-        if(limit-stateName.size() <= 0)
-            spaces+=" ";
+        spaces+=(stateName.size()<2)?"":" ";
 
         while(limit --> stateName.size()){
             spaces+=" ";

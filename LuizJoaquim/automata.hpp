@@ -21,10 +21,11 @@ private:
     std::unordered_map < std::string, Machine::State<Symbol_type> > final_states;
     std::vector< char > Alphabet;
     std::string InitialStateName;
+    bool isAFN;
 
 public:
 
-    Automata(std::vector< char > Alp) : Alphabet(Alp){}
+    Automata(std::vector< char > Alp) : Alphabet(Alp), isAFN(false){}
 
     void addState(std::string name, std::string obs){
         if(existState(name))
@@ -41,7 +42,6 @@ public:
     }
 
     void addState(std::string name){
-//         std::cout<<"Statas NAme: "<< name <<std::endl;
         addState(name, "");
     }
 
@@ -60,6 +60,10 @@ public:
 
         if( !(existState(from) and existState(to)) ) throw MissingStateException();
 
+        if(!isAFN){
+            isAFN |= true;
+        }
+
         states.at(from).epsilonConnect(&(states.at(to)));
     }
 
@@ -69,6 +73,10 @@ public:
 
     bool isFinal(state_name key){
         return final_states.count(key);
+    }
+
+    bool isNonDeterministic(){
+        return isAFN;
     }
 
     bool containsFinal(std::vector<std::string> stateSet){

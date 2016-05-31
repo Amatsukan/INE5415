@@ -58,12 +58,19 @@ void setOpt(int argc, char** argv)
     }
 }
 
+template<typename T>
+void info(Automata<T> automaton){
+
+}
+
 auto main(int argc, char** argv) -> int
 {
     setOpt(argc, argv);
 
     TableWorker tb;
     auto automata = tb.getInputMachine();
+
+
 
     if(flagMinimize){
         std::cout<<"Minimization : NOT DONE YET, comming soon!!!"<<std::endl;

@@ -54,14 +54,14 @@ namespace Machine{
             return epsilonTransitions;
         }
 
-         std::vector<std::string> get_epsilon_close(){
-             std::vector<std::string> ret;
-             ret.push_back(getName());
-             for(auto state : epsilonTransitions){
-                 ret.push_back(state->getName());
-             }
+        std::vector<std::string> get_epsilon_close(){
+            std::vector<std::string> ret;
+            ret.push_back(getName());
+            for(auto state : epsilonTransitions){
+                ret.push_back(state->getName());
+            }
 
-             return ret;
+            return ret;
         }
 
         std::set<State<Symbol_type>*> get_hit_by(Symbol_type symbol){
@@ -74,6 +74,30 @@ namespace Machine{
                 }
             }else{
                 reached_states.insert(getLimboState());
+            }
+
+            return reached_states;
+        }
+
+        std::string get_hit_by_epsilon_str(){
+            std::string reached_states = "";
+
+            if(epsilonTransitions.size() == 1){
+
+                reached_states+=(*(epsilonTransitions.begin()))->getName();
+
+            }else if(epsilonTransitions.size() > 1){
+                reached_states+="{";
+
+                auto first = epsilonTransitions.begin(), last = epsilonTransitions.end();
+                for (auto it=first; it!=last; ++it){
+                    reached_states+=(*it)->getName();
+                    reached_states+=",";
+                }
+                reached_states[reached_states.size()-1] = '}';
+
+            }else{
+                reached_states =  getLimboState()->getName();
             }
 
             return reached_states;
