@@ -26,4 +26,4 @@ debug: $(OBJECTS)
 
 # To remove generated files
 clean:
-	rm -f $(EXEC) $(wildcard *.o)
+	rm -f $(EXEC) $(wildcard *.o) $(wildcard *.out)
