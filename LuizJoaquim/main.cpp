@@ -8,17 +8,20 @@
        #include "automataworker.hpp"// AutomataWorker              //
  /**///----------------------------//----------------------------///
 /**///**********************************************************///
+namespace std{
+    string tab = "\t";
+};
 
 void help(){
     std::cout<<"HomeWork1 - INE5415 : Theory of computing"<<std::endl;
     std::cout<<std::endl<<"First set your machine in \"test1AfndAfd.in\" file"<<std::endl;
     std::cout<<std::endl<<"Argument flags:"<<std::endl;
-    std::cout<<"\t-h: Show this informations."<<std::endl;
-    std::cout<<"\t-t: Test all inputs in \"test.in\" and put all results in \"test.out.\""<<std::endl;
-    std::cout<<"\t-o: Disable machine out file write.(\"test1AfndAfd.out\")"<<std::endl;
-    std::cout<<"\t-d: Set deterministic equivalent automaton in \"test1AfndAfd.out\" and make tests for this machine."<<std::endl;
-    std::cout<<"\t-m: Minimization on."<<std::endl;
-}
+    std::cout<<std::tab<<"-h: Show this informations."<<std::endl;
+    std::cout<<std::tab<<"-t: Test all inputs in \"test.in\" and put all results in \"test.out.\""<<std::endl;
+    std::cout<<std::tab<<"-o: Disable machine out file write.(\"test1AfndAfd.out\")"<<std::endl;
+    std::cout<<std::tab<<"-d: Set deterministic equivalent automaton in \"test1AfndAfd.out\" and make tests for this machine."<<std::endl;
+    std::cout<<std::tab<<"-m: Minimization on."<<std::endl;
+ }
 
 bool flagTestInputList = false;
 bool flagSetOutputMachine = true;
@@ -27,9 +30,6 @@ bool flagMinimize = false;
 
 //mão faça isso em casa '-'
 //faço mas não aconselho kkkkkkkkk
-namespace std{
-    string tab = "\t";
-};
 
 void setOpt(int argc, char** argv)
 {
@@ -67,14 +67,11 @@ template<typename T>
 void info(Automata<T> automaton){
 
     std::cout<<"Machine info:"<<std::endl;
-
     std::cout<<std::tab<<"States : "<<automaton.getStates_str()<<std::endl;
-
     std::cout<<std::tab<<"Alphabeth : "<<automaton.getAlphabet()<<std::endl;
-
     std::cout<<std::tab<<"Initial state : "<<automaton.getInitial_str()<<std::endl;
-
     std::cout<<std::tab<<"Final states : "<<automaton.getFinals_str()<<std::endl;
+    std::cout<<std::endl<<std::endl;
 }
 
 auto main(int argc, char** argv) -> int

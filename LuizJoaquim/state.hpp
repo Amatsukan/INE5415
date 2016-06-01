@@ -110,8 +110,8 @@ namespace Machine{
 
             if(transitions.count(symbol) == 1){
 
-                auto its = transitions.equal_range(symbol);
-                reached_states+=(*(its.first)).second->getName();
+                // auto its = transitions.equal_range(symbol);
+                reached_states+=(*(transitions.begin())).second->getName();
 
             }else if(transitions.count(symbol) > 1){
                 reached_states+="{";
@@ -144,28 +144,33 @@ namespace Machine{
         std::set< State<Symbol_type>* > make_transitions(std::queue<Symbol_type> word){
             std::set< State<Symbol_type>* > reached_states;
 
-
             if(epsilonTransitions.size() > 0){
                 for (auto it=epsilonTransitions.begin(); it!=epsilonTransitions.end(); ++it){
                         std::set< State<Symbol_type>* > results = (*it)->make_transitions(word);
                         reached_states.insert( results.begin(), results.end() );
                     }
-            }if(word.empty()){
+            }
+
+            if(word.empty()){
                 reached_states.insert(this);
                 return reached_states;
-
             }else{
 
                 Symbol_type token =  word.front();
                 word.pop();
 
-                if(transitions.count(token) > 0){
-                    auto its = transitions.equal_range(token);
-                    for (auto it=its.first; it!=its.second; ++it){
-                        std::set< State<Symbol_type>* > results = (*it).second->make_transitions(word);
-                        reached_states.insert( results.begin(), results.end() );
+                if(transitions.size() > 0){
+                    if(transitions.count(token) > 0){
+                        auto its = transitions.equal_range(token);
+                        for (auto it=its.first; it!=its.second; ++it){
+                            std::set< State<Symbol_type>* > results = (*it).second->make_transitions(word);
+                            reached_states.insert( results.begin(), results.end() );
+                        }
+                    }else{
+                        reached_states.insert(getLimboState());
                     }
-                }else{
+                }
+                else{
                     reached_states.insert(getLimboState());
                 }
              }

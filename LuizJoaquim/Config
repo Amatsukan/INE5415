@@ -10,4 +10,4 @@ FinalStateIdentifier:*
 InitialStateIdentifier:->
 FirstTableNullSlotId:#
 NotTransitionIdentifier:--
-OutTableColumnLength:15
+OutTableColumnLength:18

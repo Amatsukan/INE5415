@@ -106,7 +106,6 @@ public:
         }
 
         std::string spaces = stateName;
-        limit -= stateName.size();
 
         if((op & FINAL_STATE) == FINAL_STATE){
             limit-=1;
@@ -115,8 +114,6 @@ public:
         if((op & INITIAL_STATE) == INITIAL_STATE){
             limit-=2;
         }
-
-        spaces+=(stateName.size()<2)?"":" ";
 
         while(limit --> stateName.size()){
             spaces+=" ";

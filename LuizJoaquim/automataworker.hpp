@@ -14,8 +14,6 @@ class AutomataWorker
 private:
     void addNextState(std::string stateName, std::vector<std::string> states);
 
-    std::vector<std::string> getNextState(std::vector<std::string> states,Symbol_type c);
-
     std::string getStateName(std::set<Machine::State<Symbol_type>*> states);
 
     std::string NameStateInOrder(std::vector<std::string> states);
@@ -61,44 +59,38 @@ Automata<Symbol_type> AutomataWorker<Symbol_type>::determinize(){
 }
 
 template <typename Symbol_type>
-void AutomataWorker<Symbol_type>::addNextState(std::string stateName, std::vector<std::string> states){
-    std::vector<std::string> nextState;
+void AutomataWorker<Symbol_type>::addNextState(std::string stateName, std::vector<std::string> states)//StateName it's composed by states
+{
+    std::vector<std::string> reachedStates;
  	auto alphabet = AFD.getAlphabet_vector();
+
     for(Symbol_type c:alphabet){
-//          nextState = getNextState(states, c);
 
-// 		 \\\\\\\\
+    	auto contains = [reachedStates] (std::string nome){
+    		for(auto s : reachedStates)
+    			if(s == nome)
+    				return true;
+    		return false;
+    	};
+        for(auto s: states){
 
-	auto contains = [nextState] (std::string nome){
-		for(auto s : nextState)
-			if(s == nome)
-				return true;
-		return false;
-	};
-    for(auto s: states){
+            for(auto newS: AFN.get_state_by_name(s).get_hit_by(c)){
+    			if(newS->getName() == ConfigReader::getNotTransition())
+    				continue;
+                if(!contains(newS->getName())){
+    				reachedStates.push_back(newS->getName());
+    			}
+    		}
+        }
 
-        for(auto newS: AFN.get_state_by_name(s).get_hit_by(c)){
-			if(newS->getName() == ConfigReader::getNotTransition())
-				continue;
-			std::cout<<"Statas size: "<< newS->getName() <<std::endl;
-            if(contains(newS->getName())){
-				nextState.push_back(newS->getName());
-				std::cout<<"ESTADO ATINGIDO:" << newS->getName() <<std::endl;
-			}
-		}
-    }
-
-// 		 \\\\\\\\\\
-
-
-
-
-
-       	std::string nextState_str = NameStateInOrder(nextState);
+       	std::string nextState_str = NameStateInOrder(reachedStates);
 
         if(!AFD.existState(nextState_str)){
             AFD.addState(nextState_str);
-            addNextState(nextState_str, nextState);
+            if(AFN.containsFinal(reachedStates)){
+                AFD.toggle_final(nextState_str);
+            }
+            addNextState(nextState_str, reachedStates);
         }
 
 		AFD.addTransition(c, stateName, nextState_str);
@@ -106,35 +98,12 @@ void AutomataWorker<Symbol_type>::addNextState(std::string stateName, std::vecto
 }
 
 template <typename Symbol_type>
-std::vector<std::string> AutomataWorker<Symbol_type>::getNextState(std::vector<std::string> states,Symbol_type c){
-    std::vector<std::string> newState;
-	auto contains =[newState] (std::string nome){
-		for(auto s : newState)
-			if(s == nome)
-				return true;
-		return false;
-	};
-    for(auto s: states){
-
-		std::cout<<"Statas size: "<<c<<std::endl;
-        for(auto newS: AFN.get_state_by_name(s).get_hit_by(c)){
-            if(contains(newS->getName())){
-				newState.push_back(newS->getName());
-				std::cout<<"ESTADO ATINGIDO:" << newS->getName() <<std::endl;
-			}
-		}
-    }
-    return newState;
-}
-
-template <typename Symbol_type>
 std::string AutomataWorker<Symbol_type>::NameStateInOrder(std::vector<std::string> vector){
 
     std::string ret = "";
-	if(vector.size() > 2){
+	if(vector.size() > 1){
  		ret+="{";
     }
-
 
 	std::sort(
         vector.begin(),
@@ -153,11 +122,9 @@ std::string AutomataWorker<Symbol_type>::NameStateInOrder(std::vector<std::strin
         }
     }
 
-    if(vector.size() > 2){
+    if(vector.size() > 1){
  		 ret+='}';
     }
-
-    std::cout<<ret<<std::endl;
 
     return ret;
 }
