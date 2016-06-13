@@ -64,17 +64,18 @@ void AutomataWorker<Symbol_type>::addNextState(std::string stateName, std::vecto
     std::vector<std::string> reachedStates;
  	auto alphabet = AFD.getAlphabet_vector();
 
-    for(Symbol_type c:alphabet){
+    auto contains = [reachedStates] (std::string nome){
+		for(auto s : reachedStates)
+			if(s == nome)
+				return true;
+		return false;
+	};
 
-    	auto contains = [reachedStates] (std::string nome){
-    		for(auto s : reachedStates)
-    			if(s == nome)
-    				return true;
-    		return false;
-    	};
-        for(auto s: states){
+    for(auto s: states){
 
-            for(auto newS: AFN.get_state_by_name(s).get_hit_by(c)){
+        for(Symbol_type c:alphabet){
+
+            for(auto newS: AFN.get_state_by_name(s).get_hit_by(c))
     			if(newS->getName() == ConfigReader::getNotTransition())
     				continue;
                 if(!contains(newS->getName())){
