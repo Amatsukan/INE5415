@@ -18,6 +18,13 @@ class MissingStateException : public std::exception{
     }
 };
 
+class InvalidStateNameException : public std::exception{
+    virtual const char* what() const throw()
+    {
+        return "StateName must contain at least one character";
+    }
+};
+
 //SAMPLE
 // int main ()
 // {

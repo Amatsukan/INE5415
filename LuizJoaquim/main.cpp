@@ -102,7 +102,7 @@ auto main(int argc, char** argv) -> int
     }
 
     if(flagSetOutputMachine){
-        std::cout<<"Write machine in \"test1AfndAfd.in\" file..."<<std::endl;
+        std::cout<<"Write machine in \"test1AfndAfd.out\" file..."<<std::endl;
         tb.setOutputMachine(automata);
     }
 

@@ -13,7 +13,7 @@ std::vector<std::string> TableWorker::getNEstates(std::string *field){
     return ret;
 }
 
-void TableWorker::setOutputMachine(Automata<char> a){
+void TableWorker::setOutputMachine(Automata<char> &a){
     OpenOutputFile();
 
     std::string alphabetLine = ConfigReader::spaces();
@@ -30,7 +30,8 @@ void TableWorker::setOutputMachine(Automata<char> a){
     auto states = a.getStates();
 
     for(auto s:states){
-        std::string sName = s.second.getName();
+
+        std::string sName = s.second->getName();
         std::string estado_str = "";
 
         short op = ConfigReader::NONE;
@@ -80,16 +81,17 @@ Automata<char> TableWorker::getInputMachine(){
         std::vector<std::string> stateAndTransitions = tokenize<std::string>(line);
 
         auto actualState = stateAndTransitions[0];
-        bool is_final = isFinal(&actualState);
         bool is_initial = isInitial(&actualState);
+        bool is_final = isFinal(&actualState);
 
         if(! a.existState(actualState) ){
             a.addState(actualState);
-            if(is_final)
-                a.toggle_final(actualState);
-            if(is_initial)
-                a.toggle_initial(actualState);
         }
+
+        if(is_final){ a.toggle_final(actualState); }
+
+        if(is_initial){ a.toggle_initial(actualState); }
+
         for(int i = 1; i< alphabet.size(); i++){
             for(auto s : getNEstates( &(stateAndTransitions[i]) ))
                 if( s!= ConfigReader::getNotTransition() ){
@@ -109,7 +111,6 @@ Automata<char> TableWorker::getInputMachine(){
 }
 
 bool TableWorker::isFinal(std::string *stateName){
-
     for (int i = 0; i < stateName->size(); ++i)
         if((*stateName)[i] == ConfigReader::getFinalStateChar()){
             (*stateName).erase(std::remove((*stateName).begin(), (*stateName).end(), ConfigReader::getFinalStateChar()), (*stateName).end());

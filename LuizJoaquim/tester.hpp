@@ -56,13 +56,13 @@ private:
         }
 
         std::cout<<"Testing for "<<lc()<<" inputs..."<<std::endl;
-
+        int i = 0;
         while(getline(inputs,tok)){
 
             std::queue<char> actualWord;
 
             for(char c : tok){
-                if(c == '\n' and c == '\r' and c == '\0' and c == ' ') continue;
+                if(c == '\n' and c == '\r' and c == '\0' and c == ' ' and c == '\t') continue;
                 actualWord.push(c);
             }
 
@@ -76,12 +76,12 @@ private:
 
     std::string toString(std::queue<char> word){
         std::string ret;
-        for(int i = 0; i<=word.size(); i++){
+        while(!word.empty()){
             ret+=(char)word.front();
             word.pop();
         }
 
-        return ret;
+        return ret+"\0";
     }
 
 public:

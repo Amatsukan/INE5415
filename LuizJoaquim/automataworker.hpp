@@ -49,9 +49,10 @@ Automata<Symbol_type> AutomataWorker<Symbol_type>::determinize(){
 
     AFD.addState(newStateI_str);
     AFD.toggle_initial(newStateI_str);
-		if(AFN.containsFinal(newStateI)){
-			AFD.toggle_final(newStateI_str);
-		}
+
+    if(AFN.containsFinal(newStateI)){
+		AFD.toggle_final(newStateI_str);
+	}
 
     addNextState(newStateI_str, newStateI);
 
@@ -61,41 +62,46 @@ Automata<Symbol_type> AutomataWorker<Symbol_type>::determinize(){
 template <typename Symbol_type>
 void AutomataWorker<Symbol_type>::addNextState(std::string stateName, std::vector<std::string> states)//StateName it's composed by states
 {
-    std::vector<std::string> reachedStates;
- 	auto alphabet = AFD.getAlphabet_vector();
+    auto alphabet = AFD.getAlphabet_vector();
 
-    auto contains = [reachedStates] (std::string nome){
-		for(auto s : reachedStates)
-			if(s == nome)
-				return true;
-		return false;
-	};
+    for(auto s: states){//for each state
 
-    for(auto s: states){
+        for(Symbol_type c:alphabet){//for each symbol
 
-        for(Symbol_type c:alphabet){
+            std::vector<std::string> reachedStates;
 
-            for(auto newS: AFN.get_state_by_name(s).get_hit_by(c))
+            auto contains = [&] (std::string nome){
+                for(auto s : reachedStates)
+                    if(s == nome)
+                        return true;
+                return false;
+            };
+
+            auto reached_by_c = AFN.get_state_by_name(s).get_hit_by(c);
+
+            for(auto newS: reached_by_c){
     			if(newS->getName() == ConfigReader::getNotTransition())
     				continue;
                 if(!contains(newS->getName())){
     				reachedStates.push_back(newS->getName());
     			}
     		}
-        }
 
-       	std::string nextState_str = NameStateInOrder(reachedStates);
+           	std::string nextState_str = NameStateInOrder(reachedStates);
+            if( reachedStates.size() > 0 ){
+                if( ! AFD.existState(nextState_str) ){
+                    AFD.addState(nextState_str);
+                    if(AFN.containsFinal(reachedStates)){
+                        AFD.toggle_final(nextState_str);
+                    }
+                    addNextState(nextState_str, reachedStates);
+                }
 
-        if(!AFD.existState(nextState_str)){
-            AFD.addState(nextState_str);
-            if(AFN.containsFinal(reachedStates)){
-                AFD.toggle_final(nextState_str);
+        		AFD.addTransition(c, stateName, nextState_str);
             }
-            addNextState(nextState_str, reachedStates);
         }
-
-		AFD.addTransition(c, stateName, nextState_str);
-     }
+        // reachedStates = std::vector<std::string>();
+    }
 }
 
 template <typename Symbol_type>
@@ -115,7 +121,7 @@ std::string AutomataWorker<Symbol_type>::NameStateInOrder(std::vector<std::strin
         }
     );
 
-    for (auto state : vector)
+    for ( const auto &state : vector )
     {
         ret+=std::string(state);
         if(state != vector.at(vector.size()-1)){

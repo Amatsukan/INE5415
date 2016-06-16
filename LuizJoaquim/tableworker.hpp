@@ -57,7 +57,7 @@ private:
 
 public:
 
-    void setOutputMachine(Automata<char>);
+    void setOutputMachine(Automata<char>&);
     Automata<char> getInputMachine();
 };
 

@@ -8,7 +8,6 @@
 #include "config.hpp"   // ConfigReader                                                  //
 //_____________________//_______________________________________________________________//
 
-
 typedef std::string state_name;
 
 //GRAPH
@@ -16,9 +15,9 @@ template <typename Symbol_type>
 class Automata{
 private:
 
-    //std::string => stateName, Machine::State<Symbol_type> => state
-    std::unordered_map < std::string, Machine::State<Symbol_type> > states;
-    std::unordered_map < std::string, Machine::State<Symbol_type> > final_states;
+    //(std::string -> stateName) => (Machine::State<Symbol_type> -> state)
+    std::unordered_map < std::string, Machine::State<Symbol_type>* > states;
+    std::set< state_name > final_states;
     std::vector< char > Alphabet;
     std::string InitialStateName;
     bool isAFN;
@@ -28,10 +27,13 @@ public:
     Automata(std::vector< char > Alp) : Alphabet(Alp), isAFN(false){}
 
     void addState(std::string name, std::string obs){
+        if(name.length() < 1)
+            throw InvalidStateNameException();
+
         if(existState(name))
             throw ExistStateException();
 
-        auto state = Machine::State<Symbol_type>(name, obs);
+        auto state = new Machine::State<Symbol_type>(name, obs);
 
         states.emplace(name,state);
 
@@ -46,14 +48,14 @@ public:
     }
 
     Machine::State<Symbol_type> get_state_by_name(std::string state_name){
-        return states.at(state_name);
+        return *(states.at(state_name));
     }
 
     void addTransition(Symbol_type condition, std::string from, std::string to){
 
         if( !(existState(from) and existState(to)) ) throw MissingStateException();
 
-        states.at(from).connect(&(states.at(to)), condition);
+        states.at(from)->connect(states.at(to), condition);
     }
 
     void addEpsilonTransition(std::string from, std::string to){
@@ -61,10 +63,10 @@ public:
         if( !(existState(from) and existState(to)) ) throw MissingStateException();
 
         if(!isAFN){
-            isAFN |= true;
+            isAFN = true;
         }
 
-        states.at(from).epsilonConnect(&(states.at(to)));
+        states.at(from)->epsilonConnect(states.at(to));
     }
 
     bool existState(state_name key){
@@ -101,12 +103,12 @@ public:
         if(isFinal(s)){
             final_states.erase(s);
         }else{
-            final_states.emplace(s,Machine::State<Symbol_type>(s));
+            final_states.insert(s);
         }
 
     }
 
-    std::unordered_map < std::string, Machine::State<Symbol_type> > getStates(){
+    std::unordered_map < std::string, Machine::State<Symbol_type>* > getStates(){
         return states;
     }
 
@@ -118,7 +120,7 @@ public:
     std::string getFinals_str(){
         std::string ret;
         for(auto state : final_states){
-            ret+=state.second.getName();
+            ret+=state;
             ret+=" ";
         }
 
@@ -128,7 +130,7 @@ public:
     std::string getStates_str(){
         std::string ret;
         for(auto state : states){
-            ret+=state.second.getName();
+            ret+=state.second->getName();
             ret+=" ";
         }
 
@@ -156,12 +158,11 @@ public:
         return ret;
     }
 
-    std::string getStateTransitions_str(std::string s){
+    std::string getStateTransitions_str(state_name s){
        std::string stateT = "";
 
        for(char c:Alphabet){
             if(c == ConfigReader::getNullSlot() or c == ConfigReader::getEpsilon()) continue;
-
             std::string hitByC = get_state_by_name(s).get_hit_by_str(c);
             stateT += ConfigReader::spaces(hitByC);
        }

@@ -110,15 +110,18 @@ namespace Machine{
 
             if(transitions.count(symbol) == 1){
 
-                // auto its = transitions.equal_range(symbol);
-                reached_states+=(*(transitions.begin())).second->getName();
+                auto its = transitions.equal_range(symbol);
+
+                reached_states+=(*(its.first)).second->getName();
 
             }else if(transitions.count(symbol) > 1){
                 reached_states+="{";
                 auto its = transitions.equal_range(symbol);
                 for (auto it=its.first; it!=its.second; ++it){
                     reached_states+=(*it).second->getName();
-                    reached_states+=",";
+                    auto it_cpy = it;
+                    if( it_cpy++ != its.second )
+                        reached_states+=",";
                 }
                 reached_states[reached_states.size()-1] = '}';
 
