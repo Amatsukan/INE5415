@@ -11,6 +11,11 @@ You can also:
 
 ### Info:
 
+Dependencies:
+  - C++ compiler with C++11 support
+  - Make
+  - We do not guarantee that works with WINDOWS OS
+  
 Program files:
 
 | File              | Function                          |
