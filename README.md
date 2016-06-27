@@ -1,7 +1,11 @@
 # HomeWork1 - INE5415 : Theory of computing
-##### Automata slave - Finite automata worktable
+##### Universidade Federal de Santa Catarina - UFSC
 
-You can also:
+Students:
+ - Luiz Carlos Ferreira Junior
+ - Joaquim Boschini Belo
+
+Software features:
   - Determinize finite automaton
   - Test finite automaton with N input;
   - Minimize automatons (COMING SOON)
